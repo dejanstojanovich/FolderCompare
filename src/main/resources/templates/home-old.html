@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"    
+    xmlns:th="http://www.thymeleaf.org"
+    > 
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <!--        <meta name="_csrf" th:content="${_csrf.token}"/>
+                 default header name is X-CSRF-TOKEN 
+                <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+        <title>Folder compare</title> 
+        <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
+        <script src="./webjars/jquery/3.5.1/jquery.min.js"></script>
+        <!--bootstrap-->
+        <script src="./webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <link rel='stylesheet' href='./webjars/bootstrap/4.5.0/css/bootstrap.min.css'/>
+        <!--bootstrap-toggle-->
+
+        <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/css/bootstrap4-toggle.min.css" rel="stylesheet"/>  
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/js/bootstrap4-toggle.min.js"></script>
+        <!--        <script src="./webjars/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+                <link rel='stylesheet' href='./webjars/bootstrap-toggle/css/bootstrap-toggle.min.css'/>-->
+        <!--bootstrap3-dialog-->
+        <!--        <script src="./webjars/bootstrap3-dialog/dist/js/bootstrap-dialog.min.js"></script>
+                <link rel='stylesheet' href='./webjars/bootstrap3-dialog/dist/css/bootstrap-dialog.min.css'/>-->
+        <!--bootstrap-datepicker-->
+        <!--        <script src="./webjars/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+                <link rel='stylesheet' href='./webjars/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css'/>-->
+        <!--momentjs-->
+        <script src="./webjars/momentjs/min/moment.min.js"></script>
+        <!--my files-->
+        <link rel="stylesheet"  th:href="@{'css/home_all.css'}"  href="css/home_all.css" />
+        <link rel="stylesheet"  th:href="@{'css/home_{device}.css'(device=${device})}"  href="css/home_desktop.css" />
+
+        <script th:src="@{js/home.js}"></script>
+        <link rel="manifest" href="./json/manifest.json" th:manifest="@{json/manifest.json}"></link>
+
+    </head>
+    <body> 
+        <div id="mainContainer" class="container-fluid">
+            <ul id="navigation" class="nav nav-tabs"  role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="listing-tab" data-toggle="tab" href="#listing" role="tab" aria-controls="listing" aria-selected="true">Folder selection</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="diff-tab" data-toggle="tab" href="#diff" role="tab" aria-controls="diff" aria-selected="false">Diff</a>
+                </li>
+
+            </ul>
+            <div class="tab-content">
+                <div id="listing"  class="tab-pane fade show active">
+                    <div class="row">
+                        <div class="col-sm-12  top5 text-center">
+                            <input id="synchronized" type="checkbox" checked="checked"  data-toggle="toggle" data-on="Synchronized Browsing" data-off="Individual Browsing" 
+                                   data-onstyle="success"  data-offstyle="danger" th:attr="data-size=${#strings.equals(device,'desktop')} ?'sm':'xs'" data-height="35" data-width="300"/>
+                        </div>
+                    </div>
+                    <div th:replace="listing :: listingFragment"></div>
+                </div>
+                <div id="diff"  class="tab-pane fade">
+                    <div th:replace="folderListing :: folderListingFragment"></div>
+                </div>
+
+            </div>
+        </div>
+        <script  th:inline="javascript">
+            /*<![CDATA[*/
+//            var device = /*[[${device}]]*/ 'desktop';
+//            var ws = /*[[@{/bot-data}]]*/ 'ws';
+            /*]]>*/
+        </script>
+
+
+
+
+
+    </body>
+
+</html>

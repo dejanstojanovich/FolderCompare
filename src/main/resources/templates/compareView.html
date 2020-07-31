@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Bot</title> 
+    </head>
+
+    <body>
+        <th:block th:fragment="comparedFragment" >
+            <div data-side="left" class="col-sm-6" style="padding-right: 0;margin-right: -10px">
+                <div id="leftPane" data-side="left" class="pane btn-group-vertical  col-sm-12" role="group">
+                    <div th:replace="rootPane :: paneFragment"></div>
+                </div>
+            </div>
+            <div data-side="left" class="col-sm-6" style="padding-left: 0;margin-left: -10px">
+                <div id="rightPane" data-side="right" class="pane btn-group-vertical col-sm-12" role="group">
+                    <div th:replace="rootPane :: paneFragment"></div>
+                </div>
+            </div>
+        </th:block>
+
+    </body>
+</html>

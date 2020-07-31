@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Bot</title> 
+    </head>
+
+    <body>
+        <div id = "listing-table" th:fragment="listingFragment" >
+            <div class="row">
+                <div class="btn-group-vertical col-sm-6" role="group">
+                    <button  type="button" class="root-button btn btn-info buttons mb-2 mt-2"  th:classappend="${#strings.equals(device,'desktop')} ? btn-sm : btn-xs">Root</button>
+                    <th:block  th:each="partition : ${partitions}">
+                        <button th:id="${partition.getAbsolutePath()}" type="button" class="list-button btn btn-primary mb-1"  th:classappend="${#strings.equals(device,'desktop')} ? btn-sm : btn-xs" th:text="${partition.getAbsolutePath()}">Test</button>
+                    </th:block>
+                </div>
+                <div class="btn-group-vertical col-sm-6" role="group">
+                    <button type="button" class="root-button btn btn-info buttons mb-2 mt-2"  th:classappend="${#strings.equals(device,'desktop')} ? btn-sm : btn-xs">Root</button>
+                    <th:block  th:each="partition : ${partitions}">
+                        <button th:id="${partition.getAbsolutePath()}" type="button" class="list-button btn btn-primary mb-1"  th:classappend="${#strings.equals(device,'desktop')} ? btn-sm : btn-xs" th:text="${partition.getAbsolutePath()}">Test</button>
+                    </th:block>
+                </div>
+            </div>
+
+            <hr/>
+
+        </div>
+    </body>
+</html>

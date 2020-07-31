@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Bot</title> 
+    </head>
+
+    <body>
+        <th:block th:fragment="paneFragment" >
+            <button id="root" type="button" class="root-button btn btn-info btn-sm buttons mb-2 mt-2">Root</button>
+            <th:block  th:each="file : ${file_list}">
+                <div class="btn-group btn-group-sm" role="group">
+                     <button th:id="${file.getAbsolutePath()}" type="button" class="list-button btn btn-primary btn-sm mb-1"
+                          th:attr="data-type=${file.isFile()} ? 'file' : 'folder',data-path=${file.getAbsolutePath()}" th:text="${file.getAbsolutePath()}">Test</button>
+                </div>
+               
+            </th:block>
+        </th:block>
+
+    </body>
+</html>

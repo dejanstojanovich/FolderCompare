@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"    
+    xmlns:th="http://www.thymeleaf.org"
+    > 
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <!--        <meta name="_csrf" th:content="${_csrf.token}"/>
+                 default header name is X-CSRF-TOKEN 
+                <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+        <title>Folder compare</title> 
+        <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
+        <script src="./webjars/jquery/3.5.1/jquery.min.js"></script>
+        <!--bootstrap-->
+        <script src="./webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <link rel='stylesheet' href='./webjars/bootstrap/4.5.0/css/bootstrap.min.css'/>
+        <!--bootstrap-toggle-->
+
+        <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/css/bootstrap4-toggle.min.css" rel="stylesheet"/>  
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/js/bootstrap4-toggle.min.js"></script>
+        <!--momentjs-->
+        <script src="./webjars/momentjs/min/moment.min.js"></script>
+        <!--font-awesome-->
+        <!--<link rel="stylesheet" href="./webjars/font-awesome/css/fontawesome.min.css"/>-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/css/bootstrap-dialog.min.css" rel="stylesheet"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
+
+        <!--my files-->
+        <link rel="stylesheet"  th:href="@{'css/home_all.css'}"  href="css/home_all.css" />
+        <!--<link rel="stylesheet"  th:href="@{'css/home_{device}.css'(device=${device})}"  href="css/home_desktop.css" />-->
+
+        <script th:src="@{js/home.js}"></script>
+        <link rel="manifest" href="./json/manifest.json" th:manifest="@{json/manifest.json}"></link>
+
+    </head>
+    <body> 
+        <div id="mainContainer" class="container-fluid">
+            <ul id="navigation" class="nav nav-tabs"  role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="listing-tab" data-toggle="tab" href="#listing" role="tab" aria-controls="listing" aria-selected="true">Folder selection</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="diff-tab" data-toggle="tab" href="#diff" role="tab" aria-controls="diff" aria-selected="false">Diff</a>
+                </li>
+
+            </ul>
+            <div class="tab-content">
+                <div id="listing"  class="tab-pane fade show active">
+                    <div class="row">
+                        <div class="col-sm-2  top5 text-center">
+                            <button id="dirCompare" type="button" class="root-button btn btn-info btn-sm buttons mb-2 mt-2">Compare</button>
+                        </div>
+                        <div class="col-sm-8  top5 text-center">
+                            <input id="synchronized" type="checkbox" checked="checked"  data-toggle="toggle" data-on="Synchronized Browsing" data-off="Individual Browsing" 
+                                   data-onstyle="success"  data-offstyle="danger" data-size='sm' data-height="35" data-width="300"/>
+                        </div>
+                        <div class="col-sm-2  top5 text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <input id="lockDirs" type="checkbox" checked="checked"  data-toggle="toggle" data-on="Lock Dirs" data-off="Unlock Dirs" 
+                                       data-onstyle="secondary"  data-offstyle="success" data-size='sm' data-height="35"
+                                       title='Locks currently selected directories for synchronized browsing'/>
+                            </div>
+                        </div>
+                    </div>
+                    <div >
+                        <div  id = "listing-data" class="row">
+                            <div data-side="left" class="col-sm-6" style="padding-right: 0;margin-right: -10px">
+                                <div id="leftPane" data-side="left" class="pane btn-group-vertical  col-sm-12" role="group">
+                                    <div th:replace="rootPane :: paneFragment"></div>
+                                </div>
+                            </div>
+                            <div data-side="left" class="col-sm-6" style="padding-left: 0;margin-left: -10px">
+                                <div id="rightPane" data-side="right" class="pane btn-group-vertical col-sm-12" role="group">
+                                    <div th:replace="rootPane :: paneFragment"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                    </div>
+
+
+                </div>
+                <div id="diff"  class="tab-pane fade">
+                    <div th:replace="folderListing :: folderListingFragment"></div>
+                </div>
+
+            </div>
+        </div>
+        <script  th:inline="javascript">
+            /*<![CDATA[*/
+            //            var device = /*[[${device}]]*/ 'desktop';
+            //            var ws = /*[[@{/bot-data}]]*/ 'ws';
+            /*]]>*/
+        </script>
+
+
+
+
+
+    </body>
+
+</html>

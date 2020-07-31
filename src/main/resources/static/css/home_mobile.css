@@ -1,0 +1,61 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 19, 2019, 9:27:23 PM
+    Author     : dejan
+*/
+
+body{
+    font-size: 10px;
+    min-width: 800px;
+}
+
+.container-fluid,.tab-content{
+    padding:0;
+}
+
+.nav > li > a{
+    padding: 3px 3px;
+    font-size: 10px;
+}
+
+
+#header-table,#header-tableUnmarked{
+    font-size: 8px;
+}
+
+
+.input-group-xs>.form-control,
+.input-group-xs>.input-group-addon,
+.input-group-xs>.input-group-btn>.btn {
+    height: 22px;
+    padding: 1px 5px;
+    font-size: 10px;
+    line-height: 1.5;
+}
+/*.smallpadding {
+   padding: 2px !important;
+   margin: 2px !important;
+}*/
+
+.dropdown-menu,.excludeCode, .btn div {
+    font-size: 10px!important;
+}
+span.badge{
+     font-size: 8px;
+}
+#filterBar{
+    position: fixed;
+    width:700px;
+    background-color: black;
+    left:40%;
+    top:0;
+    padding:0;
+    z-index: 150;
+}
+/*#filterBar input{
+ width: 100px;   
+}*/

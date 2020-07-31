@@ -1,0 +1,191 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 7, 2019, 11:50:05 AM
+    Author     : Dejan
+*/
+body{
+    background-color: black;
+    font-family: Arial, Gadget, sans-serif;
+    font-weight: bold;
+    color: #aaa;
+    width:99%;
+    margin-left: auto;
+    margin-right: auto;
+}
+pre{
+    background-color: black;
+    font-family: Arial, Gadget, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #aaa;
+}
+.table-striped > tbody > tr:nth-child(2n+1) > td
+, .table-striped > tbody > tr:nth-child(2n+1) > th {
+    background-color:#444 ;
+}
+.table-striped > tbody > tr.nameRow > td
+{
+    background-color:#ccc ;
+    padding:1px;
+}
+.table-striped > tbody > tr.nameRowEmpty > td
+{
+    background-color:#ccc ;
+    padding:3px;
+}
+.top5 { margin-top:5px; }
+.top10 { margin-top:10px; }
+.top20 { margin-top:20px; }
+
+#filterBar{
+    position: fixed;
+    width:700px;
+    background-color: black;
+    left:40%;
+    top:0;
+    padding:0;
+    z-index: 150;
+}
+#mainContainer{
+    margin-top: 3px;
+}
+#results-tab{
+    padding:10px;
+}
+#results-table,#results-tableUnmarked{
+    /*font-size: 12px;*/
+    table-layout: fixed;
+}
+#results-table td:nth-child(1),#results-tableUnmarked td:nth-child(1),
+#results-table td:nth-child(3),#results-tableUnmarked td:nth-child(3),
+#results-table td:nth-child(4),#results-tableUnmarked td:nth-child(4),
+#results-table td:nth-child(5),#results-tableUnmarked td:nth-child(5),
+#results-table td:nth-child(6),#results-tableUnmarked td:nth-child(6),
+#results-table td:nth-child(7),#results-tableUnmarked td:nth-child(7),
+#results-table td:nth-child(8),#results-tableUnmarked td:nth-child(8),
+#results-table td:nth-child(10),#results-tableUnmarked td:nth-child(10),
+#results-table td:nth-child(11),#results-tableUnmarked td:nth-child(11),
+#results-table td:nth-child(12),#results-tableUnmarked td:nth-child(12){
+    text-align: right;
+}
+#header-table,#header-tableUnmarked{
+    /*font-size: 12px;*/
+    position: fixed;
+    table-layout: fixed;
+    background-color: black;
+}
+#header-table td,#header-tableUnmarked td{
+    overflow: hidden;
+    font-size: 8px;
+    cursor: pointer;
+}
+#results-table td:hover,#results-tableUnmarked td:hover{
+    cursor: pointer;
+}
+
+#navigation, ul, li{
+    z-index: 200;
+}
+#codeFilterCancel,#codeFilterCancelUnmarked,
+#exchangeFilterCancel,#exchangeFilterCancelUnmarked{
+    cursor: pointer;
+}
+#reloadLogs,#clearAlerts{
+    position: fixed;
+    top:0;
+    left:49%;
+    z-index: 300;
+}
+.disabled {
+    color:white;
+    pointer-events:none; 
+}
+.modal-dialog{
+    display: table;
+}
+.modal-body{
+    background-color: black;
+    color: #aaa;
+}
+
+#filtersTab{
+    padding-top:4px;
+}
+#filters-table input[type=number]::-webkit-inner-spin-button, 
+#filters-table input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+    color:black;
+}
+#filters-table input[type=number] {
+    -moz-appearance:textfield; 
+    text-align: right;
+    color:black;
+}
+#filtersTab input[type=text]{
+    color:black;
+}
+#filters-table span.label{
+    cursor: pointer;
+}
+.rightAlign{
+    text-align: right;
+}
+.red{
+    color:red;
+}
+/*div[class="row"] {
+    outline: 1px dotted rgba(0, 0, 0, 0.25);
+}
+
+div[class^="col-"] {
+    background-color: rgba(255, 0, 0, 0.2);
+    outline: 1px dotted rgba(0, 0, 0, 0.5);
+}*/
+
+#status-table span.badge,#entryDate{
+    cursor: pointer;
+}
+.codeNote, .price{
+    display:none;
+}
+span.badge{
+    color:black;
+    margin-top: 1px;
+}
+span.badge.codeNote, span.badge.price{
+    background-color: #aaa;
+    position: relative;
+    top: 4px;
+}
+div.item{
+    padding: 2px;
+    padding-top:0;
+}
+/*div.noteList{
+    background-color: #444;
+}*/
+hr.moveUp{
+    margin-top: -25px;
+}
+
+/*input[type='file'] {
+  color: transparent;
+}*/
+.btn-toolbar .btn {
+    margin-bottom: 5px; 
+}
+.iconButton {
+    max-width: 30px !important;
+}
+.sizeButton {
+    max-width: 90px !important;
+}
+.dateButton {
+    max-width: 120px !important;
+    font-size: 10px !important;
+}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Bot</title> 
+    </head>
+
+    <body>
+        <th:block th:fragment="noParamsErrorFragment" >
+            <h3>Error - request parameter missing</h3>
+        </th:block>
+        <th:block th:fragment="folderDoesntExistErrorFragment" >
+            <h3>Error - folder doesn't exist</h3>
+        </th:block>
+
+    </body>
+</html>
