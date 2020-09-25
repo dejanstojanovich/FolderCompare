@@ -1,7 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) 2020 Dejan Stojanovic <dejanstojanovich@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.ds.foldercompare.util;
 
@@ -25,7 +36,7 @@ import lombok.Data;
 
 /**
  *
- * @author Dejan
+ * @author Dejan Stojanovic
  */
 @Data
 public class FolderComparator {
@@ -119,6 +130,72 @@ public class FolderComparator {
         public String toString() {
             return "{" + "filename=" + filename + ", leftFile=" + (leftFile == null ? "" : leftFile.getName())
                     + ", rightFile=" + (rightFile == null ? "" : rightFile.getName()) + ", equal=" + equal + '}';
+        }
+
+        public String getLeftFileName() {
+            return leftFile == null ? "-" : leftFile.getName();
+        }
+
+        public String getLeftFilePath() {
+            return leftFile == null ? "-" : leftFile.getAbsolutePath();
+        }
+
+        public String getLeftFileSize() {
+            return leftFile == null ? "" : Constants.readableFileSize(leftFile.length());
+        }
+
+        public String getLeftFileLength() {
+            return leftFile == null ? "" : leftFile.length() + "";
+        }
+
+        public String getLeftFileType() {
+            return leftFile == null ? "" : (leftFile.isFile() ? "file" : "");
+        }
+
+        public String getLeftFileModified() {
+            return leftFile == null ? "" : Constants.getDate(leftFile.lastModified());
+        }
+
+        public String getLeftFileClass() {
+            if (equal) {
+                return "btn-secondary";
+            } else {
+                return leftFile == null ? "btn-dark" : "btn-danger";
+            }
+
+        }
+
+        public String getRightFileName() {
+            return rightFile == null ? "-" : rightFile.getName();
+        }
+
+        public String getRightFilePath() {
+            return rightFile == null ? "-" : rightFile.getAbsolutePath();
+        }
+
+        public String getRightFileSize() {
+            return rightFile == null ? "" : Constants.readableFileSize(rightFile.length());
+        }
+
+        public String getRightFileLength() {
+            return rightFile == null ? "" : rightFile.length() + "";
+        }
+
+        public String getRightFileType() {
+            return rightFile == null ? "" : (rightFile.isFile() ? "file" : "");
+        }
+
+        public String getRightFileModified() {
+            return rightFile == null ? "" : Constants.getDate(rightFile.lastModified());
+        }
+
+        public String getRightFileClass() {
+            if (equal) {
+                return "btn-secondary";
+            } else {
+                return rightFile == null ? "btn-dark" : "btn-danger";
+            }
+
         }
 
         public FileComparatorItem(String file, boolean handleFiles) {

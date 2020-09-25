@@ -18,27 +18,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Bot</title> 
+        <title>Files</title> 
     </head>
 
     <body>
-        <th:block th:fragment="errorFragment" >
-            <h3 class="error" th:text="${message}">Error</h3>
-        </th:block>
-        <th:block th:fragment="noParamsErrorFragment" >
-            <h3 class="error">Error - request parameter missing</h3>
-        </th:block>
-        <th:block th:fragment="fileExistErrorFragment" >
-            <h3 class="error">Error - file does not exist</h3>
-        </th:block>
-        <th:block th:fragment="folderDoesntExistErrorFragment" >
-            <h3 class="error">Error - folder doesn't exist</h3>
-        </th:block>
-        <th:block th:fragment="extensionNotValidErrorFragment" >
-            <h3 class="error">Error - file extension not permitted</h3>
-        </th:block>
-        <th:block th:fragment="fileSizeErrorFragment" >
-            <h3 class="error">Error - file size exceeds limit</h3>
+        <th:block th:fragment="linesFragment" >
+
+            <th:block  th:each="line : ${lines}">
+               
+                <button type="button" class="line-button btn btn-secondary btn-sm mb-1 col-sm-12"><pre th:text="${line.isEmpty()}?' ':${line}">-</pre></button>
+            </th:block>
         </th:block>
 
     </body>

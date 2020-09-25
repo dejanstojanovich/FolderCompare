@@ -19,7 +19,7 @@
     </properties>
 
     <dependencies>
-               <dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
@@ -48,22 +48,22 @@
             <version>0.30</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.webjars/font-awesome -->
-<dependency>
-    <groupId>org.webjars</groupId>
-    <artifactId>font-awesome</artifactId>
-    <version>5.13.1</version>
-</dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>5.13.1</version>
+        </dependency>
 
-<!--        <dependency>    
+        <!--        <dependency>    
             <groupId>org.springframework.boot</groupId>    
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>-->
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-<dependency>
-    <groupId>com.google.guava</groupId>
-    <artifactId>guava</artifactId>
-    <version>29.0-jre</version>
-</dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
+        </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
@@ -74,11 +74,7 @@
             <artifactId>jquery</artifactId>
             <version>3.5.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.webjars.bower</groupId>
-            <artifactId>bootstrap-datepicker</artifactId>
-            <version>1.8.0</version>
-        </dependency>
+       
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>momentjs</artifactId>
@@ -125,8 +121,22 @@
             <artifactId>spring-web</artifactId>
             <type>jar</type>
         </dependency>
-     
-      
+  <!--                     https://mvnrepository.com/artifact/org.netbeans.api/org-netbeans-modules-diff -->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-diff</artifactId>
+            <version>RELEASE113</version>
+        </dependency>
+<!--        https://github.com/java-diff-utils/java-diff-utils
+       <dependency>
+    <groupId>io.github.java-diff-utils</groupId>
+    <artifactId>java-diff-utils</artifactId>
+    <version>4.5</version>
+</dependency>-->
+         <dependency>
+	  <groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-security</artifactId>
+	</dependency>
     </dependencies>
 
     <build>
@@ -137,5 +147,5 @@
             </plugin>
         </plugins>
     </build>
-
+  
 </project>

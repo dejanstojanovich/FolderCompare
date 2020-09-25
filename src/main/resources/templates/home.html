@@ -30,7 +30,6 @@
 
         <!--my files-->
         <link rel="stylesheet"  th:href="@{'css/home_all.css'}"  href="css/home_all.css" />
-        <!--<link rel="stylesheet"  th:href="@{'css/home_{device}.css'(device=${device})}"  href="css/home_desktop.css" />-->
 
         <script th:src="@{js/home.js}"></script>
         <link rel="manifest" href="./json/manifest.json" th:manifest="@{json/manifest.json}"></link>
@@ -39,11 +38,11 @@
     <body> 
         <div id="mainContainer" class="container-fluid">
             <ul id="navigation" class="nav nav-tabs"  role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="listing-tab" data-toggle="tab" href="#listing" role="tab" aria-controls="listing" aria-selected="true">Folder selection</a>
+                <li class="nav-item active" role="presentation">
+                    <a class="nav-link" id="listing-tab" data-toggle="tab" href="#listing" role="tab" aria-controls="listing" aria-selected="true">Folder selection</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="diff-tab" data-toggle="tab" href="#diff" role="tab" aria-controls="diff" aria-selected="false">Diff</a>
+                    <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a>
                 </li>
 
             </ul>
@@ -51,57 +50,82 @@
                 <div id="listing"  class="tab-pane fade show active">
                     <div class="row">
                         <div class="col-sm-2  top5 text-center">
-                            <button id="dirCompare" type="button" class="root-button btn btn-info btn-sm buttons mb-2 mt-2">Compare</button>
+                            <button id="dirCompare" type="button" class="root-button btn btn-info btn-sm buttons mb-2 mt-2">Compare Dir</button>
                         </div>
                         <div class="col-sm-8  top5 text-center">
                             <input id="synchronized" type="checkbox" checked="checked"  data-toggle="toggle" data-on="Synchronized Browsing" data-off="Individual Browsing" 
                                    data-onstyle="success"  data-offstyle="danger" data-size='sm' data-height="35" data-width="300"/>
                         </div>
-                        <div class="col-sm-2  top5 text-center">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <input id="lockDirs" type="checkbox" checked="checked"  data-toggle="toggle" data-on="Lock Dirs" data-off="Unlock Dirs" 
-                                       data-onstyle="secondary"  data-offstyle="success" data-size='sm' data-height="35"
-                                       title='Locks currently selected directories for synchronized browsing'/>
-                            </div>
-                        </div>
                     </div>
-                    <div >
+                    <div>
                         <div  id = "listing-data" class="row">
                             <div data-side="left" class="col-sm-6" style="padding-right: 0;margin-right: -10px">
                                 <div id="leftPane" data-side="left" class="pane btn-group-vertical  col-sm-12" role="group">
                                     <div th:replace="rootPane :: paneFragment"></div>
                                 </div>
                             </div>
-                            <div data-side="left" class="col-sm-6" style="padding-left: 0;margin-left: -10px">
+                            <div data-side="right" class="col-sm-6" style="padding-left: 0;margin-left: -10px">
                                 <div id="rightPane" data-side="right" class="pane btn-group-vertical col-sm-12" role="group">
                                     <div th:replace="rootPane :: paneFragment"></div>
                                 </div>
                             </div>
                         </div>
-
                         <hr/>
-
                     </div>
 
 
                 </div>
-                <div id="diff"  class="tab-pane fade">
-                    <div th:replace="folderListing :: folderListingFragment"></div>
+                <div id="files"  class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-sm-2  top5 text-center">
+                            <button type="button" class="showFile btn btn-info btn-sm buttons mb-2 mt-2" data-side="left">Show content</button>
+                        </div>
+                        <div class="col-sm-2 offset-sm-3 top5 text-center">
+                            <button id="fileCompare" type="button" class="btn btn-info btn-sm buttons mb-2 mt-2">Compare Files</button>
+                        </div>
+                        <div class="col-sm-2  offset-sm-3 top5 text-center">
+                            <button type="button" class="showFile btn btn-info btn-sm buttons mb-2 mt-2" data-side="right">Show content</button>
+                        </div>
+
+
+                    </div>
+                    <div >
+                        <div  id = "filePane" class="row">
+                            <div data-side="left" class="col-sm-6">
+                                <div id="leftFilePane" data-side="left" class="pane btn-group-vertical col-sm-12" role="group">
+                                    <button type="button" class="filename-button btn btn-info btn-sm buttons mb-2 mt-2" 
+                                            >-</button>
+                                    <div  id="leftFileContents" data-side="left" class="pane-text">
+                                        No File Selected
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-side="right" class="col-sm-6">
+                                <div id="rightFilePane" data-side="right" class="pane btn-group-vertical col-sm-12" role="group">
+                                    <button type="button" class="filename-button btn btn-info btn-sm buttons mb-2 mt-2" 
+                                            >-</button>
+                                    <div  id="rightFileContents" data-side="right" class="pane-text">
+                                        No File Selected
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                        </div>
+
+                        <hr/>
+
+                    </div>
                 </div>
 
             </div>
         </div>
-        <script  th:inline="javascript">
-            /*<![CDATA[*/
-            //            var device = /*[[${device}]]*/ 'desktop';
-            //            var ws = /*[[@{/bot-data}]]*/ 'ws';
-            /*]]>*/
-        </script>
+        <svg id='connectors' />
+        <div id="pageUp">
+            <i class="fa fa-arrow-circle-o-up fa-3x" aria-hidden="true"></i>
 
-
-
-
-
+        </div>
     </body>
-
+  
+  <!--<svg><line stroke-width="1px" stroke="#ccc"  x1="0" y1="0" x2="100" y2="100" id="mySVG"/></svg>-->
 </html>

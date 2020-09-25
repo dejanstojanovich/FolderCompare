@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
+* Copyright (C) 2020 Dejan Stojanovic <dejanstojanovich@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
@@ -11,15 +22,91 @@ and open the template in the editor.
     </head>
 
     <body>
-        <th:block th:fragment="comparedFragment" >
+        <th:block th:fragment="compareFragment" >
             <div data-side="left" class="col-sm-6" style="padding-right: 0;margin-right: -10px">
                 <div id="leftPane" data-side="left" class="pane btn-group-vertical  col-sm-12" role="group">
-                    <div th:replace="rootPane :: paneFragment"></div>
+                    <!--folder item-->
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" 
+                                class="root-button btn btn-info btn-sm buttons mb-2 mt-2" 
+                                th:attr="data-path=${folder_left}"
+                                th:text="${folder_left}">folder_left</button>
+<!--                        <th:block th:if="${lock}" >
+                            <button class="up-button btn btn-secondary btn-sm buttons mb-2 mt-2 iconButton">
+                                <i class="fa fa-lock"></i>
+                            </button>
+                        </th:block>-->
+                        <button class="up-button btn btn-secondary btn-sm buttons mb-2 mt-2 iconButton">
+                            <i class="fa fa-upload"></i>
+                        </button>
+                    </div>
+                    <!--folder contents-->
+                    <th:block  th:each="file : ${file_list}">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" 
+                                    class="list-button btn btn-sm mb-1" 
+                                    th:classappend="${file.getLeftFileClass()}"
+                                    th:attr="data-type=${file.getLeftFileType()},data-path=${file.getLeftFilePath()}" 
+                                    th:text="${file.getLeftFileName()}">Left File</button>
+
+                            <button class="btn btn-sm buttons mb-1 sizeButton" 
+                                    th:classappend="${file.getLeftFileClass()}"
+                                    th:text="${file.getLeftFileSize()}"
+                                    th:title="${file.getLeftFileLength()}"></button>
+                            <button class="btn btn-sm buttons mb-1 dateButton" 
+                                    th:classappend="${file.getLeftFileClass()}"
+                                    th:text="${file.getLeftFileModified()}"></button>
+                            <button class="btn btn-sm buttons mb-1 iconButton"
+                                    th:classappend="${file.getLeftFileClass()}">
+                                <th:block th:if="${file.getLeftFile() != null}" >
+                                    <i class='fa' th:classappend="${file.getLeftFile().isFile()} ? fa-file-text : fa-folder-open"></i>
+                                </th:block>
+                            </button>
+                        </div>
+                    </th:block>
                 </div>
             </div>
             <div data-side="left" class="col-sm-6" style="padding-left: 0;margin-left: -10px">
                 <div id="rightPane" data-side="right" class="pane btn-group-vertical col-sm-12" role="group">
-                    <div th:replace="rootPane :: paneFragment"></div>
+                    <!--folder item-->
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" 
+                                class="root-button btn btn-info btn-sm buttons mb-2 mt-2"                                
+                                th:attr="data-path=${folder_right}"
+                                th:text="${folder_right}">folder_right</button>
+                        <th:block th:if="${lock}" >
+                            <button class="up-button btn btn-secondary btn-sm buttons mb-2 mt-2 iconButton">
+                                <i class="fa fa-lock"></i>
+                            </button>
+                        </th:block>
+                        <button class="up-button btn btn-secondary btn-sm buttons mb-2 mt-2 iconButton">
+                            <i class="fa fa-upload"></i>
+                        </button>
+                    </div>
+                    <!--folder contents-->
+                    <th:block  th:each="file : ${file_list}">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button class="btn btn-sm buttons mb-1 iconButton"
+                                    th:classappend="${file.getRightFileClass()}">
+                                <th:block th:if="${file.getRightFile() != null}" >
+                                    <i class='fa' th:classappend="${file.getRightFile().isFile()} ? fa-file-text : fa-folder-open"></i>
+                                </th:block>
+                            </button>
+                            <button class="btn btn-sm buttons mb-1 dateButton" 
+                                    th:classappend="${file.getRightFileClass()}"
+                                    th:text="${file.getRightFileModified()}"></button>
+                            <button class="btn btn-sm buttons mb-1 sizeButton" 
+                                    th:classappend="${file.getRightFileClass()}"
+                                    th:text="${file.getRightFileSize()}"
+                                    th:title="${file.getRightFileLength()}"></button>
+                            <button type="button" 
+                                    class="list-button btn btn-sm mb-1" 
+                                    th:classappend="${file.getRightFileClass()}"
+                                    th:attr="data-type=${file.getRightFileType()},data-path=${file.getRightFilePath()}" 
+                                    th:text="${file.getRightFileName()}">Left File</button>
+                           
+                        </div>
+                    </th:block>
                 </div>
             </div>
         </th:block>

@@ -14,16 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ds.foldercompare;
+package com.ds.foldercompare.util;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Data;
+import org.netbeans.api.diff.Difference;
 
-@SpringBootApplication
-public class FolderCompareApplication {
+/**
+ *
+ * @author Dejan Stojanovic
+ */
+@Data
+public class DiffResult {
 
-    public static void main(String[] args) {
-        SpringApplication.run(FolderCompareApplication.class, args);
+    boolean firstLeftEmpty = false;
+    boolean firstRightEmpty = false;
+    List<DiffLine> leftFile;
+    List<DiffLine> rightFile;
+    Difference[] diffs = new Difference[0];
+    ArrayList<Integer> diffTypes = new ArrayList<>();
+
+    public DiffResult(Difference[] diffs) {
+        this.diffs = diffs;
+        leftFile = new ArrayList<>();
+        rightFile = new ArrayList<>();
     }
-
 }

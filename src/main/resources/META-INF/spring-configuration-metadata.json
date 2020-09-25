@@ -1,0 +1,34 @@
+{
+    "properties": [
+        {
+            "name": "diff.extensions",
+            "type": "java.lang.String[]",
+            "description": "Allowed diff file extensions"
+        },
+        {
+            "name": "diff.allowedClients",
+            "type": "java.lang.String[]",
+            "description": "Allowed clients to access the application"
+        },
+        {
+            "name": "diff.user",
+            "type": "java.lang.String",
+            "description": "Authentication user name"
+        },
+        {
+            "name": "diff.pass",
+            "type": "java.lang.String",
+            "description": "Authentication user password"
+        },
+        {
+            "name": "diff.authenticate",
+            "type": "java.lang.Boolean",
+            "description": "Set to true to enable authentication"
+        },
+        {
+            "name": "diff.allowedDiffSize",
+            "type": "java.lang.Long",
+            "description": "Allowed diff file size"
+        }
+    ]
+}
