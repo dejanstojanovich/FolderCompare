@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
+<!--This fragment displays the difference view on the directory comparison-->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
     <head>
@@ -31,11 +33,7 @@
                                 class="root-button btn btn-info btn-sm buttons mb-2 mt-2" 
                                 th:attr="data-path=${folder_left}"
                                 th:text="${folder_left}">folder_left</button>
-<!--                        <th:block th:if="${lock}" >
-                            <button class="up-button btn btn-secondary btn-sm buttons mb-2 mt-2 iconButton">
-                                <i class="fa fa-lock"></i>
-                            </button>
-                        </th:block>-->
+
                         <button class="up-button btn btn-secondary btn-sm buttons mb-2 mt-2 iconButton">
                             <i class="fa fa-upload"></i>
                         </button>
@@ -46,7 +44,7 @@
                             <button type="button" 
                                     class="list-button btn btn-sm mb-1" 
                                     th:classappend="${file.getLeftFileClass()}"
-                                    th:attr="data-type=${file.getLeftFileType()},data-path=${file.getLeftFilePath()}" 
+                                    th:attr="data-type=${file.getLeftFileType()},data-path=${file.getLeftFilePath()},data-file_size=${file.getLeftFileLength()}" 
                                     th:text="${file.getLeftFileName()}">Left File</button>
 
                             <button class="btn btn-sm buttons mb-1 sizeButton" 
@@ -102,7 +100,7 @@
                             <button type="button" 
                                     class="list-button btn btn-sm mb-1" 
                                     th:classappend="${file.getRightFileClass()}"
-                                    th:attr="data-type=${file.getRightFileType()},data-path=${file.getRightFilePath()}" 
+                                    th:attr="data-type=${file.getRightFileType()},data-path=${file.getRightFilePath()},data-file_size=${file.getRightFileLength()}" 
                                     th:text="${file.getRightFileName()}">Left File</button>
                            
                         </div>

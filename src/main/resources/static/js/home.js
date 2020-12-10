@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global diffCount, diffTypes */
+/* global diffCount, diffTypes, extensions, sizeLimit, sizeLimitString */
 
 
 //define string constants
@@ -24,6 +24,7 @@ const SIDE = "side";
 const FILE = "file";
 const FOLDER = "folder";
 const PATH = "path";
+const FILE_SIZE = "file_size";
 const TYPE = "type";
 const ROOT = "Root";
 const EMPTY = "-";
@@ -40,6 +41,7 @@ var today = new Date();
 var expires = new Date(today.getFullYear() + 30, today.getMonth(), today.getDate() + 1, 0, 0, 0, 0);
 
 $(document).ready(function () {
+    //all handlers are separated into functions for better organization
     addFileHandler();
     addCompareHandler();
     addListingHandler();
@@ -50,18 +52,26 @@ $(document).ready(function () {
     addScrollTopHandler();
     loadCookieData();
 });
-
+//If the window size changes, we need to resize the svg element which is used to draw difference polygons
 $(window).resize(function () {
     scaleSVG();
 });
-
+/**
+ * Scale the svg element to fit the document
+ * It is positioned as absolute to match perfectly the elements which are connected to display the differences
+ */
 function scaleSVG() {
     var docWidth = $(window).width();
     var docHeight = $(document).height();
     $("#connectors").css("width", docWidth + "px");
     $("#connectors").css("height", docHeight + "px");
+    if ($("#connectors polygon").length > 0) {
+        setDiffPolys();
+    }
 }
-
+/**
+ * Handle svg element visibility depending on the selected tab
+ */
 function addTabHandler() {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         if ($(e.target).attr('href') === "#files") {
@@ -71,18 +81,27 @@ function addTabHandler() {
         }
     });
 }
+/**
+ * Simple scroll to top of the page element
+ */
 function addScrollTopHandler() {
     $("#pageUp").click(function () {
         $("html, body").animate({scrollTop: 0}, "fast");
     });
 }
+/**
+ * Handle file actions
+ */
 function addFileHandler() {
+    /**
+     * Display selected file contents
+     */
     $("button.showFile").click(function () {
         var data = {};
         var side = $(this).data(SIDE);
         data[FILE] = $("#" + side + "FilePane button.filename-button").text();
         if (data[FILE] === EMPTY) {
-            showTimedAlert("noFilePath", "File not selected");
+            showTimedAlert("noFilePath", "File not selected", 'danger');
             return;
         }
 
@@ -90,39 +109,46 @@ function addFileHandler() {
         resetDiff();
     });
 }
+/**
+ * Handle folder/file compare actions 
+ */
 function addCompareHandler() {
+    /**
+     * Compare two selected directories and display the results
+     */
     $("#dirCompare").click(function () {
         var data = {};
         data["folder_left"] = $("#leftPane button.root-button").text();
         data["folder_right"] = $("#rightPane button.root-button").text();
         if (data["folder_left"] === "Root" || data["folder_right"] === "Root") {
-            showTimedAlert("noRootCompare", "Root comparison not allowed");
+            showTimedAlert("noRootCompare", "Root comparison not allowed", 'danger');
             return;
         }
         if (data["folder_left"] === data["folder_right"]) {
-            showTimedAlert("nothingToCompare", "Nothing to compare - same dir");
+            showTimedAlert("nothingToCompare", "Nothing to compare - same dir", 'danger');
             return;
 
         }
         postData("compare", replaceCompared, data, "side");
     });
+    /**
+     * Compare two selected files and display the results
+     */
     $("#fileCompare").click(function () {
         var data = {};
         data[FILE_LEFT] = $("#leftFilePane button.filename-button").text();
         data[FILE_RIGHT] = $("#rightFilePane button.filename-button").text();
         if (data[FILE_LEFT] === EMPTY || data[FILE_RIGHT] === EMPTY) {
-            showTimedAlert("noFileCompare", "Both files must be selected");
+            showTimedAlert("noFileCompare", "Both files must be selected", 'danger');
             return;
         }
 
         postData(FILE_COMPARE, replaceComparedFile, data, "");
     });
 }
-
-function doNothing() {
-
-}
-
+/**
+ * Add keyboard shortcuts for filtering the list of files by first letter and reseting the filter with "Escape" key
+ */
 function addKeyHandlers() {
     $(document).keyup(function (e) {
 
@@ -146,45 +172,102 @@ function addKeyHandlers() {
         }
     });
 }
+/**
+ * Set the synchronized flag for synchronized browsing through both selected folders.
+ * Flag is saved in a cookie for future usage.
+ */
 function addTogglerHandlers() {
     $("#synchronized").change(function () {
         synchronizedBrowsing = $(this).prop('checked');
         saveState();
     });
 }
-
+/**
+ * Set the file/folder listing handlers
+ */
 function addListingHandler() {
+    /**
+     * Reset the click handler on listed file/folder items
+     * Click on folder item shows the listing of the selected folder.
+     * Click on file item checks if the file extension and size is allowed and sets the parameters on the "Files" tab.
+     * Alert message is displayed if the file is not allowed for this action.
+     */
     $(".list-button").unbind('click');
     $(".list-button").click(function () {
         var type = $(this).data(TYPE);
         var path = $(this).data(PATH);
         var side = $(this).parent().parent().data(SIDE);
         if (type === FILE) {
-            $("#" + side + "FilePane button.filename-button").text(path);
-            $("#" + side + "FileContents button").remove();
-            resetDiff();
-            showTimedAlert("fileSet", "File selected on the " + side + " side");
-            return;
-        }
-        if (path === EMPTY) {
-            return;
-        }
-        var folderName = $(this).text();
-
-        loadDir(path, side);
-
-        if (synchronizedBrowsing) {
-            side = getOtherSide(side);
-            if ($("#" + side + "Pane button.root-button").text() !== ROOT && $("#" + side + "Pane button.list-button:contains('" + folderName + "')").length === 0) {
-                $("#synchronized").bootstrapToggle('off');
+            var checkData = isFilePermitted($(this));
+            if (!checkData.extensionValid) {
+                showTimedAlert("fileExtensionAlert", "File extension not permitted.  Only " + JSON.stringify(extensions) + " extensions are permitted!", 'danger');
                 return;
             }
-            path = $("#" + side + "Pane button.root-button").text() === ROOT ? $(this).text() : $("#" + side + "Pane button.root-button").text() + folderName;
+            if (!checkData.sizeValid) {
+                showTimedAlert("fileSizeAlert", "File size too large.  Maximum size is (" + sizeLimitString + ")!", 'danger');
+                return;t
+            }
+            $("#" + side + "FilePane button.filename-button").text(path);
+//            $("#" + side + "FileContents button").remove();
+            $("#" + side + "FileContents div.line-group").remove();
+            $("#" + side + "FileContents hr").remove();
+            resetDiff();
+            showTimedAlert("fileSet", "File selected on the " + side + " side", 'primary');
+        } else {
+            if (path === EMPTY) {
+                return;
+            }
+            var folderName = $(this).text();
+
             loadDir(path, side);
+
+            if (synchronizedBrowsing) {
+                side = getOtherSide(side);
+                if ($("#" + side + "Pane button.root-button").text() !== ROOT && $("#" + side + "Pane button.list-button:contains('" + folderName + "')").length === 0) {
+                    $("#synchronized").bootstrapToggle('off');
+                    return;
+                }
+                path = $("#" + side + "Pane button.root-button").text() === ROOT ? $(this).text() : $("#" + side + "Pane button.root-button").text() + folderName;
+                loadDir(path, side);
+            }
         }
     });
+    /**
+     * Set the hover icon to diff icon only for files that are valid by extension and size
+     */
+    $(".list-button").unbind('hover');
+    $(".list-button[data-type='file']").hover(
+            function () {
+                var checkData = isFilePermitted($(this));
+                if (checkData.extensionValid && checkData.sizeValid) {
+                    $(this).css('cursor', "url('../img/diff.png'), pointer");
+                } else {
+                    $(this).css('cursor', 'pointer');
+                }
+            },
+            function () {
+                $(this).css('cursor', 'pointer');
+            }
+    );
 }
-
+/**
+ * Check if the file extension and size are allowed
+ * @param $fileElement ".list-button" element which contains all the file parameters
+ * @returns object containing flags for extension and size validation
+ */
+function isFilePermitted($fileElement) {
+    var data = {};
+    var fileExt = $($fileElement).data(PATH).split('.').pop();
+    var fileSize = $($fileElement).data(FILE_SIZE);
+    data.extensionValid = extensions.length === 0 || extensions.includes(fileExt);
+    data.sizeValid = sizeLimit > parseInt(fileSize);
+    return data;
+}
+/**
+ * Action function to prepare and send AJAX request for folder listing
+ * @param  dir absolute path of the directory to list (or ROOT for root listing)
+ * @param  side pane side where the listing should be displayed
+ */
 function loadDir(dir, side) {
     if (dir === ROOT) {
         return;
@@ -194,7 +277,9 @@ function loadDir(dir, side) {
     data[SIDE] = side;
     postData("list", replaceListing, data, data[SIDE]);
 }
-
+/**
+ * Handle parent directory listing when the user clicks on the up arrow next to the directory path
+ */
 function addDirUpHandler() {
     $(".up-button").unbind('click');
     $(".up-button").click(function () {
@@ -212,13 +297,12 @@ function addDirUpHandler() {
     });
 }
 
-function replaceFile(side, html) {
-
-    $("#" + side + "FileContents button").remove();
-    $("#" + side + "FileContents").html(html);
-    scaleSVG();
-    saveState();
-}
+/**
+ * Action handler which is called on the AJAX response for directory listing.
+ * It replaces the listing pane on the web page and saves the parameters to the cookie.
+ * @param side define which listing should be replaced (LEFT or RIGHT)
+ * @param html response containing new file/folder listing 
+ */
 function replaceListing(side, html) {
 
     $("#" + side + "Pane").html(html);
@@ -228,6 +312,12 @@ function replaceListing(side, html) {
     saveState();
 }
 
+/**
+ * Action handler which is called on the AJAX response for compared directory listing.
+ * It replaces the both listing panes on the web page and shows marked differences.
+ * @param side not used, but remained to preserve the same action function signature
+ * @param html response containing new compared file/folder listing 
+ */
 function replaceCompared(side, html) {
 
     $("#listing-data").html(html);
@@ -235,17 +325,50 @@ function replaceCompared(side, html) {
     addDirUpHandler();
     $("html, body").animate({scrollTop: 0}, "fast");
 }
+/**
+ * Action handler which is called on the AJAX response for displaying the file contents. 
+ * Alert message is displayed in case of error.
+ * @param side define the side on which the file is to be displayed
+ * @param html file contents as the list of lines
+ */
+function replaceFile(side, html) {
+    if (html.search("class='error'") !== -1) {
+        showTimedAlert("errorCompareAlert", html, 'danger');
+    } else {
+        $("#" + side + "FileContents button").remove();
+        $("#" + side + "FileContents").html(html);
+        scaleSVG();
+        saveState();
+    }
+}
+/**
+ * Action handler which is called on the AJAX response for displaying the compared file contents. 
+ * Upon loading the html contents, svg polygons are drawn to connect the individual differences on both files.
+ * Alert message is displayed in case of error.
+ * @param side not used, but remained to preserve the same action function signature
+ * @param html formatted output containing both file contents with marked differences on the compared files
+ */
 function replaceComparedFile(side, html) {
-    if ($(html).find('h3.error').length > 0) {
-        showTimedAlert("errorCompareAlert", html);
+    if (html.search("class='error'") !== -1) {
+        showTimedAlert("errorCompareAlert", html, 'danger');
     } else {
         $("#filePane").html(html);
         scaleSVG();
+        
 //    setDiffLines();
         setDiffPolys();
     }
 }
 
+function scaleLines(){
+    
+}
+
+/**
+ * Simple function to negate the pane side
+ * @param side to be negated
+ * @returns the other side in regards to the parameter 
+ */
 function getOtherSide(side) {
     if (side === LEFT) {
         return RIGHT;
@@ -253,11 +376,17 @@ function getOtherSide(side) {
         return LEFT;
     }
 }
-
-function postData(content, action, data, side) {
+/**
+ * Universal AJAX function for sending POST request and assigning a response handler
+ * @param endpoint endpoint target for POST request
+ * @param action action function which handles the response data
+ * @param data request parameters object
+ * @param side the pane side which is forwarded to the action function for handling the response
+ */
+function postData(endpoint, action, data, side) {
     $.ajax({
         type: "POST",
-        url: content,
+        url: endpoint,
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(data),
         success: function (response) {
@@ -266,39 +395,29 @@ function postData(content, action, data, side) {
     });
 }
 
-function getData(target, action) {
-    $.ajax({
-        type: "GET",
-        url: target,
-        async: false,
-        success: function (response) {
-            action(response);
-        }
-    });
-}
+/**
+ * Display alert message
+ * @param id alert element id used to prevent multiple alerts for the same message
+ * @param text message to display 
+ * @param alertType the type of the alert to display (Bootstrap alert types)
+ */
 
-function noAlert(html) {
-}
-function showAlert(id, text) {
-    if ($("#" + id).length === 0) {
-        var $alert = $('<div id="' + id + '" class="alert alert-danger alert-dismissible fade show">'
-                + text +
-                '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
-        $("body").prepend($alert);
+function showTimedAlert(id, text, alertType) {
+    alertType = alertType === undefined ? 'info' : alertType;
+    if ($("#" + id).length > 0) {
+        $("#" + id).remove();
     }
+    var $alert = $('<div id="' + id + '" class="popupAlert alert alert-' + alertType + ' alert-dismissible fade show">'
+            + text +
+            '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+    $("body").prepend($alert);
+    setTimeout(function () {
+        $("#" + id).alert('close');
+    }, 1500);
 }
-function showTimedAlert(id, text) {
-    if ($("#" + id).length === 0) {
-        var $alert = $('<div id="' + id + '" class="popupAlert alert alert-info alert-dismissible fade show">'
-                + text +
-                '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
-        $("body").prepend($alert);
-        setTimeout(function () {
-            $("#" + id).alert('close');
-        }, 1000);
-    }
-}
-
+/**
+ * Save the selected folder paths in a cookie for future use
+ */
 
 function saveState() {
     cookieData[FOLDER_LEFT] = $("#leftPane button.root-button").text();
@@ -306,83 +425,93 @@ function saveState() {
     cookieData[SYNCHRONIZED] = synchronizedBrowsing;
     setCookie(COOKIE_ID, JSON.stringify(cookieData));              //save variables as JSON
 }
-//load variables from cookie or create new ones
+/**
+ * load variables from the cookie and list the folders 
+ */
 function loadCookieData() {
-    var data = getCookie(COOKIE_ID);                         //load cookie data
-    if (data !== null) {                                    //if cookie exists
-        cookieData = JSON.parse(data);                            //parse JSON created from variables and set the variables and data
+    var data = getCookie(COOKIE_ID);
+    if (data !== null) {
+        cookieData = JSON.parse(data);
         loadDir(cookieData[FOLDER_LEFT], LEFT);
         loadDir(cookieData[FOLDER_RIGHT], RIGHT);
         synchronizedBrowsing = cookieData[SYNCHRONIZED];
         $("#synchronized").bootstrapToggle(synchronizedBrowsing ? 'on' : 'off');
     }
 }
+/**
+ * Load cookie data 
+ * @param key cookie name
+ * @returns cookie data or null if it doesn't exist
+ */
 //retreive cookie by key
 function getCookie(key) {
     var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');            //regex for finding key
     //use decodeURIComponent to convert special characters to original
     return keyValue ? decodeURIComponent(keyValue[2]) : null;
 }
+/**
+ * 
+ * @param  cookieId cookie name/ID
+ * @param  cookieData data to be saved in the cookie
+ */
+
 //set cookie to expire after 30 years
-function setCookie(key, value) {
+function setCookie(cookieId, cookieData) {
     //use encodeURIComponent to escape special characters
-    document.cookie = key + '=' + encodeURIComponent(value) + '; SameSite=None; Secure;expires=' + expires.toUTCString() + ';path=/';
+    document.cookie = cookieId + '=' + encodeURIComponent(cookieData) + '; SameSite=None; Secure;expires=' + expires.toUTCString() + ';path=/';
 }
-
-
-function addLine(id, x1, y1, x2, y2, color) {
-    $(document.createElementNS('http://www.w3.org/2000/svg', 'line'))
-            .attr({
-                id: id,
-                x1: x1,
-                y1: y1,
-                x2: x2,
-                y2: y2,
-                "stroke": color,
-                "stroke-width": "2px"
-            })
-            .appendTo("#connectors");
-}
-function addPolygon(id, x1, y1, x2, y2, x3, y3, x4, y4, strokeColor, fillColor) {
+/**
+ * Add svg polygon connector which connects the same difference on both panes
+ * @param id element id
+ * @param pointList list of absolute coordinates which define the polygon
+ * @param strokeColor the color of the polygon line
+ * @param fillColor the color of the polygon fill
+ */
+function addPolygon(id, pointList, strokeColor, fillColor) {
     $(document.createElementNS('http://www.w3.org/2000/svg', 'polygon'))
             .attr({
                 id: id,
-                points: x1 + "," + y1 + " " + x2 + "," + y2 + " " + x3 + "," + y3 + " " + x4 + "," + y4,
-
+                points: pointList,
                 "stroke": strokeColor,
                 "fill": fillColor
             })
             .appendTo("#connectors");
 }
+/**
+ * Remove all svg polygons. Used to reset the diff view on new file or comparison.
+ */
 function resetDiff() {
     $("#connectors polygon").remove();
-//      $("#connectors line").remove();
 }
-
+/**
+ * Iterate through all found differences, determine the connecting points of the diff elements and 
+ * call a function to draw connectors
+ */
 function setDiffPolys() {
     var leftCoord, rightCoord;
     resetDiff();
     for (var i = 0; i < diffTypes.length; i++) {
         leftCoord = getDiffCoords(i, LEFT);
         rightCoord = getDiffCoords(i, RIGHT);
-        addPolygon("diff" + i, leftCoord.xFirst, leftCoord.yFirst, rightCoord.xFirst, rightCoord.yFirst,
-                rightCoord.xLast, rightCoord.yLast, leftCoord.xLast, leftCoord.yLast, getDiffColor(diffTypes[i]), getDiffColor(diffTypes[i]));
+        addPolygon("diff" + i,
+                (leftCoord.xFirst + "," + leftCoord.yFirst + " " + rightCoord.xFirst + "," + rightCoord.yFirst + " "
+                        + rightCoord.xLast + "," + rightCoord.yLast + " " + leftCoord.xLast + "," + leftCoord.yLast)
+                , getDiffColor(diffTypes[i]), getDiffColor(diffTypes[i]));
     }
 }
-function setDiffLines() {
-    var leftCoord, rightCoord;
-    resetDiff();
-    for (var i = 0; i < diffTypes.length; i++) {
-        leftCoord = getDiffCoords(i, LEFT);
-        rightCoord = getDiffCoords(i, RIGHT);
-        addLine("diffTop" + i, leftCoord.xFirst, leftCoord.yFirst, rightCoord.xFirst, rightCoord.yFirst, '#999');
-        addLine("diffBottom" + i, leftCoord.xLast, leftCoord.yLast, rightCoord.xLast, rightCoord.yLast, '#999');
-    }
-}
+
+/**
+ * Get the edge coordinates of diff elements which should be joined by connectors
+ * @param diffNum difference index which is used to match the elements on both sides
+ * @param side pane side to check the element coordinates. 
+ * @returns object containing the upper right and lower right coordinate of the matched elements on the left pane.
+ * Or upper left and lower left coordinate of the matched elements on the right pane, depending on the pane side passed as parameter.
+ */
 function getDiffCoords(diffNum, side) {
     var radius = convertRemToPixels(0.2);
     var firstRadius, lastRadius;
-    var diffElements = $("#" + side + "FilePane .diff_" + diffNum);
+    var diffElements = $("#" + side + "FilePane .svgConnection.diff_" + diffNum);
+//    var diffElements = $("#" + side + "FilePane .diff_" + diffNum);
     var $first = $(diffElements).first();
     var $last = $(diffElements).last();
     firstRadius = $($first).is('hr') ? 0 : radius;
@@ -401,19 +530,28 @@ function getDiffCoords(diffNum, side) {
         };
     }
 }
-
+/**
+ * Function which converts rem unit to pixel unit
+ * @param rem size expressed in rem unit
+ * @returns size expressed in pixels
+ */
 function convertRemToPixels(rem) {
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
+/**
+ * Get the appropriate diff connector color based on the difference type
+ * @param type difference type
+ * @returns hex color that matches diff elements
+ */
 function getDiffColor(type) {
     switch (type) {
-        case 0:
+        case 0:                     //DELETE
             return '#dc3545';
             break;
-        case 1:
+        case 1:                     //ADD
             return '#218838';
             break;
-        case 2:
+        case 2:                     //CHANGE
             return '#138496';
             break;
 

@@ -16,41 +16,38 @@
  */
 package com.ds.foldercompare.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.User.UserBuilder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 /**
- *
+ * Configuration class which defines access limitations based on application.properties parameters
  * @author Dejan Stojanovic
  */
 @Configuration
 @EnableWebSecurity
 //@EnableWebSecurity(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+    //collect the parameters defined in application.properties into the variables
     @Value("${diff.allowedClients:127.0.0.1}")
     private String[] allowedClients;
     @Value("${diff.authenticate:false}")
     private Boolean authenticate;
-    @Value("${diff.user:user}")
-    private String user;
     @Value("${diff.pass:pass}")
     private String pass;
+    @Value("${diff.user:user}")
+    private String user;
 
+    /**
+     * Configure in-memory authentication for the user/pass specified in the application.properties
+     * @param auth SecurityBuilder used to create an AuthenticationManager
+     * @throws Exception
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -60,6 +57,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles("USER");
     }
 
+    /**
+     * Configure authentication or IP address filter for http requests
+     * @param http It allows configuring web based security for specific http requests
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -77,11 +79,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 if (i > 0) {
                     allowed.append(" or ");
                 }
-                allowed.append("hasIpAddress('").append(allowedClients[i]).append("/32')");
+                allowed.append("hasIpAddress('").append(allowedClients[i]).append("')");
+                  if (allowedClients[i].equals("127.0.0.1")) {
+                    allowed.append(" or hasIpAddress('::1')");
+                }
             }
             http
                     .csrf().disable()
-                    //                    .httpBasic().disable()
+                    .httpBasic().disable()
                     .authorizeRequests()
                     .antMatchers("/**").access(allowed.toString());
         }

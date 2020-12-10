@@ -22,8 +22,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryIteratorException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -33,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Level;
@@ -43,36 +40,49 @@ import org.netbeans.modules.diff.builtin.provider.BuiltInDiffProvider;
 import org.netbeans.spi.diff.DiffProvider;
 
 /**
+ * Collection of static constants, variables and methods
  *
  * @author Dejan Stojanovic
  */
 public class Constants {
 
-    public static String DATA = "data";
-    public static String DATA_LEFT = "data_left";
-    public static String DATA_RIGHT = "data_right";
-    public static String DIFF_TYPES = "diff_types";
-    public static Charset ENCODING = StandardCharsets.UTF_8;
-    public static String FILE = "file";
-    public static String FILE_LEFT = "file_left";
-    public static String FILE_LIST = "file_list";
-    public static String FILE_RIGHT = "file_right";
-    public static String FIRST_LEFT_EMPTY = "first_left_empty";
-    public static String FIRST_RIGHT_EMPTY = "first_right_empty";
-    public static String FOLDER = "folder";
-    public static String FOLDER_LEFT = "folder_left";
-    public static String FOLDER_RIGHT = "folder_right";
-    public static String LINES = "lines";
-    public static String LOCK = "lock";
-    public static String MESSAGE = "message";
+    public final static String DATA = "data";
+    public final static String DATA_LEFT = "data_left";
+    public final static String DATA_RIGHT = "data_right";
+    public final static String DIFF_TYPES = "diff_types";
+    public final static Charset ENCODING = StandardCharsets.UTF_8;
+    public final static String EXTENSIONS = "extensions";
+    public final static String FILE = "file";
+    public final static String FILE_LEFT = "file_left";
+    public final static String FILE_LIST = "file_list";
+    public final static String FILE_RIGHT = "file_right";
+    public final static String FIRST_LEFT_EMPTY = "first_left_empty";
+    public final static String FIRST_RIGHT_EMPTY = "first_right_empty";
+    public final static String FOLDER = "folder";
+    public final static String FOLDER_LEFT = "folder_left";
+    public final static String FOLDER_RIGHT = "folder_right";
+    public final static String LINES = "lines";
+    public final static String LOCK = "lock";
+    public final static String MESSAGE = "message";
     private static final Difference[] NO_DIFFERENCES = new Difference[0];
     public static String PARENT_FOLDER = "parent_folder";
     public static String ROOT = "root";
     public static String SEPARATOR = File.separator;
     public static String SIDE = "side";
-    public static String TIMEZONE = "Europe/Belgrade";
-    public static SimpleDateFormat modifiedFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public final static String SIZE_LIMIT = "size_limit";
+    public final static String SIZE_LIMIT_STRING = "size_limit_string";
+    public static String TIMEZONE = "timezone";
+    public static SimpleDateFormat fileModifiedFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Perform the matching and determine all the differences on the selected
+     * files
+     *
+     * @param fileLeft first file to compare, displayed in the left pane
+     * @param fileRight second file to compare, displayed in the right pane
+     * @return DiffResult object containing all the resulting data of the
+     * comparison
+     */
     public static DiffResult diffFiles(File fileLeft, File fileRight) {
         Difference[] diffs;
         DiffResult result = new DiffResult(NO_DIFFERENCES);
@@ -92,29 +102,49 @@ public class Constants {
         return result;
     }
 
-    public static String getDate(Long timestamp) {
-        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE));
+    /**
+     * Get the formatted date/time for the provided timestamp and specified time
+     * zone
+     *
+     * @param timestamp long timestamp
+     * @param tz standard time zone string
+     * @return formatted date/time (yyyy-MM-dd HH:mm:ss)
+     */
+    public static String getDate(Long timestamp, String tz) {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone(tz));
         c.setTimeInMillis(timestamp);
-        return modifiedFormat.format(c.getTime());
+        return fileModifiedFormat.format(c.getTime());
     }
 
+    /**
+     * Prepare the output diff result from both compared files and make it ready
+     * for visual presentation
+     *
+     * @param linesFirst list of lines containing left file
+     * @param linesSecond list of lines containing right file
+     * @param diffs array of determined differences
+     * @return DiffResult object containing both file contents with marked
+     * differences per line and difference data
+     */
     private static DiffResult getDiffLines(List<String> linesFirst, List<String> linesSecond, Difference[] diffs) {
         DiffResult result = new DiffResult(diffs);
         Difference diff;
-        linesFirst.forEach((line) -> {
-            result.getLeftFile().add(new DiffLine(line));
-        });
-        linesSecond.forEach((line) -> {
-            result.getRightFile().add(new DiffLine(line));
-        });
-        for (int j = 0; j < diffs.length; j++) {
+        for (int i = 0; i < linesFirst.size(); i++) {
+            result.getLeftFile().add(new DiffLine(linesFirst.get(i), i + 1));
+
+        }
+        for (int i = 0; i < linesSecond.size(); i++) {
+            result.getRightFile().add(new DiffLine(linesSecond.get(i), i + 1));
+
+        }
+
+        for (int j = diffs.length - 1; j >= 0; j--) {
             diff = diffs[j];
-            result.getDiffTypes().add(diff.getType());
+            result.getDiffTypes().add(0,diff.getType());
             if (diff.getFirstStart() == 0) {
                 result.setFirstLeftEmpty(true);
             } else {
                 if (diff.getFirstEnd() < diff.getFirstStart()) {
-//                result.getLeftFile().add(diff.getFirstStart(), new DiffLine(true));
                     result.getLeftFile().get(diff.getFirstStart() - 1).addEmpty(j);
                 } else {
                     for (int i = diff.getFirstStart(); i <= diff.getFirstEnd(); i++) {
@@ -126,7 +156,6 @@ public class Constants {
                 result.setFirstRightEmpty(true);
             } else {
                 if (diff.getSecondEnd() < diff.getSecondStart()) {
-//                result.getRightFile().add(diff.getSecondStart(), new DiffLine(true));
                     result.getRightFile().get(diff.getSecondStart() - 1).addEmpty(j);
                 } else {
                     for (int i = diff.getSecondStart(); i <= diff.getSecondEnd(); i++) {
@@ -139,26 +168,39 @@ public class Constants {
         return result;
     }
 
+    /**
+     * Get the file/folder size for the provided File object Directory size is
+     * calculated as sum of all files/directories it contains
+     *
+     * @param file file or directory to get the size from
+     * @return total size expressed in bytes
+     */
     public static long getFileSize(File file) {
         long fileSize = 0L;
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            for (File child : children) {
-                fileSize += getFileSize(child);
+        if (file != null && file.exists()) {
+            if (file.isDirectory()) {
+                File[] children = file.listFiles();
+                for (File child : children) {
+                    fileSize += getFileSize(child);
+                }
+            } else {
+                fileSize = file.length();
             }
-        } else {
-            fileSize = file.length();
         }
         return fileSize;
     }
 
+    /**
+     * Helper method used for Font Awesome icons selection used to visually
+     * distinguish files/directories in the list
+     *
+     * @param file
+     * @return
+     */
     public static String getFileType(File file) {
         if (file == null) {
             return "";
         } else {
-            if (Files.isSymbolicLink(file.toPath())) {
-                return "fa-external-link-square";
-            }
             if (file.isDirectory()) {
                 return "fa-folder-open";
             } else {
@@ -168,14 +210,27 @@ public class Constants {
 
     }
 
+    /**
+     * Combine list of lines read from the file into the single string
+     *
+     * @param lines list of strings
+     * @return single string containing complete file contents
+     */
     public static String getText(List<String> lines) {
         StringBuilder page = new StringBuilder();
-        for (String line : lines) {
+        lines.forEach((line) -> {
             page.append(line).append("\n");
-        }
+        });
         return page.toString();
     }
 
+    /**
+     * List the directory and return the list of file objects contained in it
+     *
+     * @param parent absolute path of the directory or "ROOT" string
+     * @return if "ROOT" is passed as parameter, list of partitions/root folder
+     * objects is returned otherwise a directory listing is returned
+     */
     public static ArrayList<File> listFiles(String parent) {
         ArrayList<File> files = new ArrayList<>();
         if (parent.equals(ROOT)) {
@@ -201,6 +256,12 @@ public class Constants {
         return files;
     }
 
+    /**
+     * Helper method for reading UTF8 files
+     *
+     * @param file file object to be read
+     * @return list of strings containing file lines
+     */
     public static List<String> readFile(File file) {
 
         List<String> lines = new ArrayList<>();
@@ -212,6 +273,14 @@ public class Constants {
         return lines;
     }
 
+    /**
+     * Format the file size based on the value and adding appropriate file size
+     * units
+     *
+     * @param size file size expressed in bytes
+     * @return string containing the file size rounded to one decimal with
+     * appropriate unit
+     */
     public static String readableFileSize(long size) {
         if (size <= 0) {
             return "0";
@@ -219,10 +288,6 @@ public class Constants {
         final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-    }
-
-    public enum FILE_SIDE {
-        LEFT, RIGHT
     }
 
 }

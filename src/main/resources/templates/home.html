@@ -6,9 +6,6 @@
     <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <!--        <meta name="_csrf" th:content="${_csrf.token}"/>
-                 default header name is X-CSRF-TOKEN 
-                <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
         <title>Folder compare</title> 
         <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
         <script src="./webjars/jquery/3.5.1/jquery.min.js"></script>
@@ -32,17 +29,16 @@
         <link rel="stylesheet"  th:href="@{'css/home_all.css'}"  href="css/home_all.css" />
 
         <script th:src="@{js/home.js}"></script>
-        <link rel="manifest" href="./json/manifest.json" th:manifest="@{json/manifest.json}"></link>
 
     </head>
     <body> 
         <div id="mainContainer" class="container-fluid">
             <ul id="navigation" class="nav nav-tabs"  role="tablist">
                 <li class="nav-item active" role="presentation">
-                    <a class="nav-link" id="listing-tab" data-toggle="tab" href="#listing" role="tab" aria-controls="listing" aria-selected="true">Folder selection</a>
-                </li>
+                    <a class="nav-link" id="listing-tab" data-toggle="tab" href="#listing" role="tab" aria-controls="listing" aria-selected="true">Folder listing</a>
+                </li> 
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a>
+                    <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">File listing</a>
                 </li>
 
             </ul>
@@ -109,23 +105,24 @@
                                     </div>
                                 </div>
                             </div>
-                            
-
                         </div>
-
                         <hr/>
-
                     </div>
                 </div>
 
             </div>
         </div>
-        <svg id='connectors' />
+        <svg id='connectors'/>
         <div id="pageUp">
             <i class="fa fa-arrow-circle-o-up fa-3x" aria-hidden="true"></i>
-
         </div>
+         <script th:inline="javascript">
+                /*<![CDATA[*/
+                var extensions = /*[[${extensions}]]*/ 0;
+                var sizeLimit = /*[[${size_limit}]]*/ -1;
+                var sizeLimitString = /*[[${size_limit_string}]]*/ -1;
+                /*]]>*/
+            </script>
     </body>
   
-  <!--<svg><line stroke-width="1px" stroke="#ccc"  x1="0" y1="0" x2="100" y2="100" id="mySVG"/></svg>-->
 </html>

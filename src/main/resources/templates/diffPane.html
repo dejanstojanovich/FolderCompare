@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
+<!--This template contains fragment used for displaying the file difference of the selected files-->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
     <head>
@@ -33,15 +35,19 @@
                     <button type="button" class="filename-button btn btn-info btn-sm buttons mb-2 mt-2" th:text="${file_left}">-</button>
                     <div  id="leftFileContents" data-side="left" class="pane-text">
                         <th:block th:if="${first_left_empty}" >
-                            <hr class='emptyHr'  th:classappend="${T(com.ds.foldercompare.util.DiffLine).getEmptyClassName({diff_types.get(0)})}"/>
-                            <!--<hr class='emptyHr'  th:classappend="${T(com.ds.foldercompare.util.DiffLine).getEmptyClassName(${diff_types.get(0)})}"/>-->
+                            <hr class='emptyHr svgConnection'  th:classappend="${T(com.ds.foldercompare.util.DiffLine).getEmptyClassName({diff_types.get(0)})}"/>
                         </th:block>
                         <th:block  th:each="line : ${data_left}">
-                            <button type="button" class="line-button btn btn-sm mb-1 col-sm-12" th:classappend="${line.getClassName()}">
-                                <pre th:text="${line.getLine().isEmpty()}?' ':${line.getLine()}">-</pre>
-                            </button>
+                            <div class="line-group btn-group btn-group-sm col-sm-12" role="group">
+                                <button type="button" class="line-button btn btn-sm mb-1" th:classappend="${line.getClassName()}">
+                                    <pre th:text="${line.getLine().isEmpty()}?' ':${line.getLine()}">-</pre>
+                                </button>
+                                <button type="button" class="lineNumberButton btn btn-sm mb-1 btn-dark svgConnection"  th:classappend="${line.getLineNumberClassName()}">
+                                    <pre th:text="${line.getLineNumber()}">1</pre>
+                                </button>
+                            </div>
                             <th:block th:if="${line.isDeletedLine()}" >
-                                <hr class='emptyHr' th:classappend="${line.getEmptyClassName()}"/>
+                                <hr class='emptyHr svgConnection' th:classappend="${line.getEmptyClassName()}"/>
                             </th:block>
                         </th:block>
                     </div>
@@ -52,14 +58,19 @@
                     <button type="button" class="filename-button btn btn-info btn-sm buttons mb-2 mt-2" th:text="${file_right}">-</button>
                     <div  id="rightFileContents" data-side="right" class="pane-text">
                         <th:block th:if="${first_right_empty}" >
-                              <hr class='emptyHr'  th:classappend="${T(com.ds.foldercompare.util.DiffLine).getEmptyClassName({diff_types.get(0)})}"/>
+                            <hr class='emptyHr svgConnection'  th:classappend="${T(com.ds.foldercompare.util.DiffLine).getEmptyClassName({diff_types.get(0)})}"/>
                         </th:block>
                         <th:block  th:each="line : ${data_right}">
-                            <button type="button" class="line-button btn btn-sm mb-1 col-sm-12" th:classappend="${line.getClassName()}">
-                                <pre th:text="${line.getLine().isEmpty()}?' ':${line.getLine()}">-</pre>
-                            </button>
+                            <div class="line-group btn-group btn-group-sm col-sm-12" role="group">
+                                <button type="button" class="lineNumberButton btn btn-sm mb-1 btn-dark svgConnection" th:classappend="${line.getLineNumberClassName()}">
+                                    <pre th:text="${line.getLineNumber()}">1</pre>
+                                </button>
+                                <button type="button" class="line-button btn btn-sm mb-1" th:classappend="${line.getClassName()}">
+                                    <pre th:text="${line.getLine().isEmpty()}?' ':${line.getLine()}">-</pre>
+                                </button>
+                            </div>
                             <th:block th:if="${line.isDeletedLine()}" >
-                                <hr class='emptyHr' th:classappend="${line.getEmptyClassNameRev()}"/>
+                                <hr class='emptyHr svgConnection' th:classappend="${line.getEmptyClassNameReversed()}"/>
                             </th:block>
                         </th:block>
                     </div>

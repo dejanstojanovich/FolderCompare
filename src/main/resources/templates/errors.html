@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
+
+<!--This template contains various error fragments for specific conditions-->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
     <head>
@@ -23,23 +26,21 @@
 
     <body>
         <th:block th:fragment="errorFragment" >
-            <h3 class="error" th:text="${message}">Error</h3>
+            <span class='error' th:text="${message}">Error</span>
         </th:block>
         <th:block th:fragment="noParamsErrorFragment" >
-            <h3 class="error">Error - request parameter missing</h3>
+            <h3 class='error'>Error - request parameter missing</h3>
         </th:block>
         <th:block th:fragment="fileExistErrorFragment" >
-            <h3 class="error">Error - file does not exist</h3>
+            <h3 class='error'>Error - file does not exist</h3>
         </th:block>
         <th:block th:fragment="folderDoesntExistErrorFragment" >
-            <h3 class="error">Error - folder doesn't exist</h3>
+            <h3 class='error'>Error - folder doesn't exist</h3>
         </th:block>
         <th:block th:fragment="extensionNotValidErrorFragment" >
-            <h3 class="error">Error - file extension not permitted</h3>
+            <h3 class='error'>Error - file extension not permitted</h3>
         </th:block>
-        <th:block th:fragment="fileSizeErrorFragment" >
-            <h3 class="error">Error - file size exceeds limit</h3>
-        </th:block>
+       
 
     </body>
 </html>

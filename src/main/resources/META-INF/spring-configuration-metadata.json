@@ -11,6 +11,11 @@
             "description": "Allowed clients to access the application"
         },
         {
+            "name": "diff.timezone",
+            "type": "java.lang.String",
+            "description": "Timezone used for file timestamp"
+        },
+        {
             "name": "diff.user",
             "type": "java.lang.String",
             "description": "Authentication user name"
@@ -27,7 +32,7 @@
         },
         {
             "name": "diff.allowedDiffSize",
-            "type": "java.lang.Long",
+            "type": "java.lang.String",
             "description": "Allowed diff file size"
         }
     ]

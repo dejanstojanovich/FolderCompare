@@ -22,19 +22,29 @@ import lombok.Data;
 import org.netbeans.api.diff.Difference;
 
 /**
+ * Resulting data for the compared files
  *
  * @author Dejan Stojanovic
  */
 @Data
 public class DiffResult {
+    //list of difference types used for output formatting
 
+    ArrayList<Integer> diffTypes = new ArrayList<>();
+    //array of difference objects containing the result of file comparison
+    Difference[] diffs = new Difference[0];
+    //Indicate if the first difference should indicate empty line on the left/right respectively
     boolean firstLeftEmpty = false;
     boolean firstRightEmpty = false;
+    //formated lines for output 
     List<DiffLine> leftFile;
     List<DiffLine> rightFile;
-    Difference[] diffs = new Difference[0];
-    ArrayList<Integer> diffTypes = new ArrayList<>();
 
+    /**
+     * Constructor accepting array of differences
+     *
+     * @param diffs array of determined differences between left and right file
+     */
     public DiffResult(Difference[] diffs) {
         this.diffs = diffs;
         leftFile = new ArrayList<>();

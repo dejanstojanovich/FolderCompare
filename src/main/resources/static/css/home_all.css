@@ -34,9 +34,14 @@ pre{
     color: white;
     margin-bottom: 0;
     white-space: pre-wrap;
+    word-break:  break-all;
 }
 .line-button{
     text-align: left;
+}
+.line-group{
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .nav > li > a{
@@ -45,8 +50,8 @@ pre{
 }
 
 .top5 { margin-top:5px; }
-.top10 { margin-top:10px; }
-.top20 { margin-top:20px; }
+/*.top10 { margin-top:10px; }
+.top20 { margin-top:20px; }*/
 
 
 #mainContainer{
@@ -58,17 +63,17 @@ pre{
     z-index: 200;
 }
 
-.disabled {
+/*.disabled {
     color:white;
     pointer-events:none; 
-}
-.modal-dialog{
+}*/
+/*.modal-dialog{
     display: table;
 }
 .modal-body{
     background-color: black;
     color: #aaa;
-}
+}*/
 
 .rightAlign{
     text-align: right;
@@ -77,6 +82,14 @@ pre{
     color:red;
 }
 
+.lineNumberButton {
+    max-width: 50px !important;
+    min-width: 50px !important;
+}
+.lineNumberButton pre{
+    white-space: nowrap !important;
+    word-break:  keep-all !important;
+}
 .iconButton {
     max-width: 30px !important;
 }
@@ -108,17 +121,15 @@ hr.green{
     z-index: -100;
 
 }
-.list-button[data-type="file"]:hover{
-    cursor: url('../img/diff.png'), pointer;
-}
+
 .popupAlert{
     text-align: center;
 }
 div.alert{
     position: fixed;
     top:5px;
-    width:80%;
-    left: 10%;
+    width:60%;
+    left: 20%;
     z-index: 1000000;
 }
 #pageUp:hover{
