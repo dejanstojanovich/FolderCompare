@@ -31,8 +31,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.diff.Difference;
@@ -73,6 +75,8 @@ public class Constants {
     public final static String SIZE_LIMIT_STRING = "size_limit_string";
     public static String TIMEZONE = "timezone";
     public static SimpleDateFormat fileModifiedFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static Comparator<File> fileTreeComparator = (File f1, File f2) -> 
+            (f1.getName().toLowerCase().compareTo(f2.getName().toLowerCase()));
 
     /**
      * Perform the matching and determine all the differences on the selected
@@ -140,7 +144,7 @@ public class Constants {
 
         for (int j = diffs.length - 1; j >= 0; j--) {
             diff = diffs[j];
-            result.getDiffTypes().add(0,diff.getType());
+            result.getDiffTypes().add(0, diff.getType());
             if (diff.getFirstStart() == 0) {
                 result.setFirstLeftEmpty(true);
             } else {
@@ -232,7 +236,10 @@ public class Constants {
      * objects is returned otherwise a directory listing is returned
      */
     public static ArrayList<File> listFiles(String parent) {
+        TreeSet<File> sortedFolders = new TreeSet<>(fileTreeComparator);
+        TreeSet<File> sortedFiles = new TreeSet<>(fileTreeComparator);
         ArrayList<File> files = new ArrayList<>();
+        
         if (parent.equals(ROOT)) {
             FileSystem fs = FileSystems.getDefault();
             fs.getRootDirectories().forEach((Path path) -> {
@@ -244,12 +251,14 @@ public class Constants {
 
                 File[] fileList = folder.listFiles((file) -> !file.isHidden() && file.isDirectory() && Files.isReadable(file.toPath()));
                 if (fileList != null) {
-                    files.addAll(Arrays.asList(fileList));
+                    sortedFolders.addAll(Arrays.asList(fileList));
+                    files.addAll(sortedFolders);
                 }
 
                 fileList = folder.listFiles((file) -> !file.isHidden() && file.isFile());
                 if (fileList != null) {
-                    files.addAll(Arrays.asList(fileList));
+                  sortedFiles.addAll(Arrays.asList(fileList));
+                    files.addAll(sortedFiles);
                 }
             }
         }

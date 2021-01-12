@@ -19,7 +19,8 @@ package com.ds.foldercompare.config;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Main configuration class. Thanks to Spring autoconfiguration, it is empty and only used  to check the inserted webjars libraries
+ * Main configuration class. Thanks to Spring autoconfiguration, it is empty and only used 
+ * to check the inserted webjars libraries if needed
  * @author Dejan Stojanovic
  */
 @Configuration

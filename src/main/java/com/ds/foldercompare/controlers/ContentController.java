@@ -66,7 +66,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ContentController {
 
     private final Logger LOG = Logger.getLogger(getClass().getName());
-    private long allowedDiffSize = 2000;
+    private long allowedDiffSize = 3000;
     //property defined in application.properties, used to limit the handled file size
     @Value("${diff.allowedDiffSize:3MB}")
     private String allowedDiffSizeString;
@@ -93,7 +93,7 @@ public class ContentController {
     }
 
     /**
-     * Handle AJAX call to compare two folders passed as parameters
+     * Handle AJAX call to compare two folders passed as in the form of the HashMap
      *
      * @param model MVC model object for passing data to view
      * @param params AJAX parameters containing absolute paths of the folders to
@@ -102,8 +102,8 @@ public class ContentController {
      * folders, marking the files/folders which are not equal. In case of
      * validation error, error message is returned
      */
-    @RequestMapping(value = "/compare")
-    public String compare(Model model, @RequestBody HashMap<String, String> params) {
+    @RequestMapping(value = "/folder_compare")
+    public String folderCompare(Model model, @RequestBody HashMap<String, String> params) {
         if (params.containsKey(FOLDER_LEFT) && params.containsKey(FOLDER_RIGHT)) {
             FolderComparator comparator = new FolderComparator(params.get(FOLDER_LEFT), params.get(FOLDER_RIGHT),timezone);
             comparator.checkFolders();
@@ -111,7 +111,7 @@ public class ContentController {
             model.addAttribute(FOLDER_LEFT, params.get(FOLDER_LEFT));
             model.addAttribute(FOLDER_RIGHT, params.get(FOLDER_RIGHT));
             model.addAttribute(FILE_LIST, result);
-            return "compareView :: compareFragment";
+            return "viewCompareDirectory :: compareDirFragment";
         } else {
             LOG.log(Level.SEVERE, "noParamsErrorFragment returned on compare");
             return "errors :: noParamsErrorFragment";
@@ -156,13 +156,16 @@ public class ContentController {
                 model.addAttribute(FILE_LEFT, params.get(FILE_LEFT));
                 model.addAttribute(FILE_RIGHT, params.get(FILE_RIGHT));
                 DiffResult data = Constants.diffFiles(fileLeft, fileRight);
+                if (data.getDiffTypes().isEmpty()&& fileLeft.length()!=fileRight.length()){
+                    
+                }
 
                 model.addAttribute(FIRST_LEFT_EMPTY, data.isFirstLeftEmpty());
                 model.addAttribute(FIRST_RIGHT_EMPTY, data.isFirstRightEmpty());
                 model.addAttribute(DIFF_TYPES, data.getDiffTypes());
                 model.addAttribute(DATA_LEFT, data.getLeftFile());
                 model.addAttribute(DATA_RIGHT, data.getRightFile());
-                return "diffPane :: diffFragment";
+                return "viewCompareFile :: diffFileFragment";
             } else {
                 if (!isExtensionValid(fileLeft) && !isExtensionValid(fileRight)) {
                     model.addAttribute(MESSAGE, "Error - both file extensions not permitted");
@@ -233,13 +236,13 @@ public class ContentController {
                 } else {
                     model.addAttribute(FOLDER, ROOT);
                     model.addAttribute(FILE_LIST, listFiles(ROOT));
-                    return "rootPane :: paneFragment";
+                    return "viewRootPane :: paneFragment";
                 }
 
             } else {
                 model.addAttribute(FOLDER, ROOT);
                 model.addAttribute(FILE_LIST, listFiles(ROOT));
-                return "rootPane :: paneFragment";
+                return "viewRootPane :: paneFragment";
             }
 
         } else {

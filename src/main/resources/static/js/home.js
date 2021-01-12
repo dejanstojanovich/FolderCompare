@@ -33,7 +33,7 @@ const FOLDER_LEFT = "folder_left";
 const FOLDER_RIGHT = "folder_right";
 const FILE_LEFT = "file_left";
 const FILE_RIGHT = "file_right";
-const COOKIE_ID = "folder_compare";
+const FOLDER_COMPARE = "folder_compare";
 const SYNCHRONIZED = "synchronized";
 var synchronizedBrowsing = true;
 var cookieData = {};
@@ -129,7 +129,7 @@ function addCompareHandler() {
             return;
 
         }
-        postData("compare", replaceCompared, data, "side");
+        postData(FOLDER_COMPARE, replaceCompared, data, "side");
     });
     /**
      * Compare two selected files and display the results
@@ -205,10 +205,9 @@ function addListingHandler() {
             }
             if (!checkData.sizeValid) {
                 showTimedAlert("fileSizeAlert", "File size too large.  Maximum size is (" + sizeLimitString + ")!", 'danger');
-                return;t
+                return;
             }
             $("#" + side + "FilePane button.filename-button").text(path);
-//            $("#" + side + "FileContents button").remove();
             $("#" + side + "FileContents div.line-group").remove();
             $("#" + side + "FileContents hr").remove();
             resetDiff();
@@ -354,14 +353,14 @@ function replaceComparedFile(side, html) {
     } else {
         $("#filePane").html(html);
         scaleSVG();
-        
+
 //    setDiffLines();
         setDiffPolys();
     }
 }
 
-function scaleLines(){
-    
+function scaleLines() {
+
 }
 
 /**
@@ -423,13 +422,13 @@ function saveState() {
     cookieData[FOLDER_LEFT] = $("#leftPane button.root-button").text();
     cookieData[FOLDER_RIGHT] = $("#rightPane button.root-button").text();
     cookieData[SYNCHRONIZED] = synchronizedBrowsing;
-    setCookie(COOKIE_ID, JSON.stringify(cookieData));              //save variables as JSON
+    setCookie(FOLDER_COMPARE, JSON.stringify(cookieData));              //save variables as JSON
 }
 /**
  * load variables from the cookie and list the folders 
  */
 function loadCookieData() {
-    var data = getCookie(COOKIE_ID);
+    var data = getCookie(FOLDER_COMPARE);
     if (data !== null) {
         cookieData = JSON.parse(data);
         loadDir(cookieData[FOLDER_LEFT], LEFT);
@@ -439,26 +438,23 @@ function loadCookieData() {
     }
 }
 /**
- * Load cookie data 
+ * Load cookie data via js-cookie lib
  * @param key cookie name
  * @returns cookie data or null if it doesn't exist
  */
 //retreive cookie by key
 function getCookie(key) {
-    var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');            //regex for finding key
-    //use decodeURIComponent to convert special characters to original
-    return keyValue ? decodeURIComponent(keyValue[2]) : null;
+    return Cookies.get(key);
 }
 /**
- * 
+ * Read cookie data via js-cookie lib
  * @param  cookieId cookie name/ID
  * @param  cookieData data to be saved in the cookie
  */
 
 //set cookie to expire after 30 years
 function setCookie(cookieId, cookieData) {
-    //use encodeURIComponent to escape special characters
-    document.cookie = cookieId + '=' + encodeURIComponent(cookieData) + '; SameSite=None; Secure;expires=' + expires.toUTCString() + ';path=/';
+    Cookies.set(cookieId, cookieData, {expires: 365});
 }
 /**
  * Add svg polygon connector which connects the same difference on both panes

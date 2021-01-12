@@ -127,12 +127,7 @@
             <artifactId>org-netbeans-modules-diff</artifactId>
             <version>RELEASE113</version>
         </dependency>
-        <!--        https://github.com/java-diff-utils/java-diff-utils
-               <dependency>
-            <groupId>io.github.java-diff-utils</groupId>
-            <artifactId>java-diff-utils</artifactId>
-            <version>4.5</version>
-        </dependency>-->
+    
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -141,7 +136,7 @@
     </dependencies>
 
     <build>
-         <finalName>folderCompare</finalName>
+         <finalName>FolderCompare</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

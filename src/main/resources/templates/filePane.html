@@ -28,7 +28,8 @@
 
             <th:block  th:each="line : ${lines}">
                
-                <button type="button" class="line-button btn btn-secondary btn-sm mb-1 col-sm-12"><pre th:text="${line.isEmpty()}?' ':${line}">-</pre></button>
+                <button type="button" class="line-button btn btn-secondary btn-sm mb-1 col-sm-12">
+                    <pre th:text="${line.isEmpty()}?' ':${line}">-</pre></button>
             </th:block>
         </th:block>
 

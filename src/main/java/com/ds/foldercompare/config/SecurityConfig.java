@@ -27,6 +27,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Configuration class which defines access limitations based on application.properties parameters
+ * the application can allow access only from defined IP addresses or
+ * use basic authentication to allow access to specific user
  * @author Dejan Stojanovic
  */
 @Configuration
