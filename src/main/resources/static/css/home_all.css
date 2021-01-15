@@ -63,17 +63,10 @@ pre{
     z-index: 200;
 }
 
-/*.disabled {
-    color:white;
-    pointer-events:none; 
-}*/
-/*.modal-dialog{
-    display: table;
+.dropdown-menu {         
+    max-height: 300px;
+    overflow-y: auto;
 }
-.modal-body{
-    background-color: black;
-    color: #aaa;
-}*/
 
 .rightAlign{
     text-align: right;
@@ -82,6 +75,10 @@ pre{
     color:red;
 }
 
+.eol-button {
+    text-align: center;
+    /*color:white;*/
+}
 .lineNumberButton {
     max-width: 50px !important;
     min-width: 50px !important;

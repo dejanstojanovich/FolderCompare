@@ -17,9 +17,16 @@
 package com.ds.foldercompare.controlers;
 
 import com.ds.foldercompare.util.Constants;
+import static com.ds.foldercompare.util.Constants.CHARSET_SHORTLIST;
 import static com.ds.foldercompare.util.Constants.DATA_LEFT;
 import static com.ds.foldercompare.util.Constants.DATA_RIGHT;
 import static com.ds.foldercompare.util.Constants.DIFF_TYPES;
+import static com.ds.foldercompare.util.Constants.ENCODING;
+import static com.ds.foldercompare.util.Constants.ENCODINGS;
+import static com.ds.foldercompare.util.Constants.ENCODING_LEFT;
+import static com.ds.foldercompare.util.Constants.ENCODING_RIGHT;
+import static com.ds.foldercompare.util.Constants.EOL_LEFT;
+import static com.ds.foldercompare.util.Constants.EOL_RIGHT;
 import static com.ds.foldercompare.util.Constants.EXTENSIONS;
 import static com.ds.foldercompare.util.Constants.FILE;
 import static com.ds.foldercompare.util.Constants.FILE_LEFT;
@@ -38,10 +45,12 @@ import static com.ds.foldercompare.util.Constants.SIDE;
 import static com.ds.foldercompare.util.Constants.SIZE_LIMIT;
 import static com.ds.foldercompare.util.Constants.SIZE_LIMIT_STRING;
 import static com.ds.foldercompare.util.Constants.TIMEZONE;
+import static com.ds.foldercompare.util.Constants.getLineEnding;
 import static com.ds.foldercompare.util.Constants.listFiles;
 import com.ds.foldercompare.util.DiffResult;
 import com.ds.foldercompare.util.FolderComparator;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -93,7 +102,8 @@ public class ContentController {
     }
 
     /**
-     * Handle AJAX call to compare two folders passed as in the form of the HashMap
+     * Handle AJAX call to compare two folders passed as in the form of the
+     * HashMap
      *
      * @param model MVC model object for passing data to view
      * @param params AJAX parameters containing absolute paths of the folders to
@@ -105,7 +115,7 @@ public class ContentController {
     @RequestMapping(value = "/folder_compare")
     public String folderCompare(Model model, @RequestBody HashMap<String, String> params) {
         if (params.containsKey(FOLDER_LEFT) && params.containsKey(FOLDER_RIGHT)) {
-            FolderComparator comparator = new FolderComparator(params.get(FOLDER_LEFT), params.get(FOLDER_RIGHT),timezone);
+            FolderComparator comparator = new FolderComparator(params.get(FOLDER_LEFT), params.get(FOLDER_RIGHT), timezone);
             comparator.checkFolders();
             ArrayList<FolderComparator.FileComparatorItem> result = comparator.getResult();
             model.addAttribute(FOLDER_LEFT, params.get(FOLDER_LEFT));
@@ -130,8 +140,10 @@ public class ContentController {
      */
     @RequestMapping(value = "/file_compare")
     public String fileCompare(Model model, @RequestBody HashMap<String, String> params) {
-        if (params.containsKey(FILE_LEFT) && params.containsKey(FILE_RIGHT)) {
-
+        if (params.containsKey(FILE_LEFT) && params.containsKey(FILE_RIGHT)
+                && params.containsKey(FILE_LEFT) && params.containsKey(FILE_RIGHT)) {
+            String encodingLeft = params.get(ENCODING_LEFT);
+            String encodingRight = params.get(ENCODING_RIGHT);
             File fileLeft = new File(params.get(FILE_LEFT));
             File fileRight = new File(params.get(FILE_RIGHT));
             if (isExtensionValid(fileLeft) && isExtensionValid(fileRight)) {
@@ -155,16 +167,16 @@ public class ContentController {
                 }
                 model.addAttribute(FILE_LEFT, params.get(FILE_LEFT));
                 model.addAttribute(FILE_RIGHT, params.get(FILE_RIGHT));
-                DiffResult data = Constants.diffFiles(fileLeft, fileRight);
-                if (data.getDiffTypes().isEmpty()&& fileLeft.length()!=fileRight.length()){
-                    
-                }
+
+                DiffResult data = Constants.diffFiles(fileLeft, fileRight, encodingLeft, encodingRight);
 
                 model.addAttribute(FIRST_LEFT_EMPTY, data.isFirstLeftEmpty());
                 model.addAttribute(FIRST_RIGHT_EMPTY, data.isFirstRightEmpty());
                 model.addAttribute(DIFF_TYPES, data.getDiffTypes());
                 model.addAttribute(DATA_LEFT, data.getLeftFile());
                 model.addAttribute(DATA_RIGHT, data.getRightFile());
+                model.addAttribute(EOL_LEFT,  getLineEnding(fileLeft));
+                model.addAttribute(EOL_RIGHT, getLineEnding(fileRight));
                 return "viewCompareFile :: diffFileFragment";
             } else {
                 if (!isExtensionValid(fileLeft) && !isExtensionValid(fileRight)) {
@@ -264,6 +276,7 @@ public class ContentController {
         model.addAttribute(SIZE_LIMIT, allowedDiffSize);
         model.addAttribute(SIZE_LIMIT_STRING, Constants.readableFileSize(allowedDiffSize));
         model.addAttribute(FILE_LIST, listFiles(ROOT));
+        model.addAttribute(ENCODINGS, CHARSET_SHORTLIST.keySet());
         LOG.log(Level.INFO, "Get Homepage");
         return "home";
     }
@@ -309,12 +322,12 @@ public class ContentController {
      */
     @RequestMapping(value = "/showFile")
     public String showFile(Model model, @RequestBody HashMap<String, String> params) {
-        if (params.containsKey(FILE)) {
+        if (params.containsKey(FILE) && params.containsKey(ENCODING)) {
             File file = new File(params.get(FILE));
             if (isExtensionValid(file)) {
                 if (file.exists()) {
                     if (isFileSizeValid(file)) {
-                        List<String> lines = Constants.readFile(file);
+                        List<String> lines = Constants.readFile(file, params.get(ENCODING));
                         model.addAttribute(LINES, lines);
                         return "filePane :: linesFragment";
                     } else {

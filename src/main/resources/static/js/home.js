@@ -27,6 +27,9 @@ const PATH = "path";
 const FILE_SIZE = "file_size";
 const TYPE = "type";
 const ROOT = "Root";
+const ENCODING = "encoding";
+const ENCODING_LEFT = "encoding_left";
+const ENCODING_RIGHT = "encoding_right";
 const EMPTY = "-";
 const FILE_COMPARE = "file_compare";
 const FOLDER_LEFT = "folder_left";
@@ -100,13 +103,19 @@ function addFileHandler() {
         var data = {};
         var side = $(this).data(SIDE);
         data[FILE] = $("#" + side + "FilePane button.filename-button").text();
+        data[ENCODING] = $("#" + side + "EncodingSelectButtonText").text();
         if (data[FILE] === EMPTY) {
             showTimedAlert("noFilePath", "File not selected", 'danger');
             return;
         }
-
         postData("showFile", replaceFile, data, side);
         resetDiff();
+    });
+    $("#leftEncodingSelection a").click(function () {
+        $("#leftEncodingSelectButtonText").text($(this).text());
+    });
+    $("#rightEncodingSelection a").click(function () {
+        $("#rightEncodingSelectButtonText").text($(this).text());
     });
 }
 /**
@@ -138,6 +147,8 @@ function addCompareHandler() {
         var data = {};
         data[FILE_LEFT] = $("#leftFilePane button.filename-button").text();
         data[FILE_RIGHT] = $("#rightFilePane button.filename-button").text();
+        data[ENCODING_LEFT] = $("#leftEncodingSelectButtonText").text();
+        data[ENCODING_RIGHT] = $("#rightEncodingSelectButtonText").text();
         if (data[FILE_LEFT] === EMPTY || data[FILE_RIGHT] === EMPTY) {
             showTimedAlert("noFileCompare", "Both files must be selected", 'danger');
             return;

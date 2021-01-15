@@ -16,6 +16,9 @@
  */
 package com.ds.foldercompare.config;
 
+import org.apache.catalina.servlets.DefaultServlet;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**

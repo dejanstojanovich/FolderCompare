@@ -34,6 +34,12 @@
                 <div id="leftFilePane" data-side="left" class="pane btn-group-vertical col-sm-12" role="group">
                     <button type="button" class="filename-button btn btn-info btn-sm buttons mb-2 mt-2" th:text="${file_left}">-</button>
                     <div  id="leftFileContents" data-side="left" class="pane-text">
+                        <div class="line-group btn-group btn-group-sm col-sm-12" role="group">
+                            <button type="button" class="eol-button btn btn-sm mb-1 bg-secondary" >
+                                <strong th:text="${'Line ending: ' + eol_left}">-</strong>
+                            </button>
+                        </div>
+
                         <th:block th:if="${first_left_empty}" >
                             <hr class='emptyHr svgConnection'  th:classappend="${T(com.ds.foldercompare.util.DiffLine).getEmptyClassName({diff_types.get(0)})}"/>
                         </th:block>
@@ -57,6 +63,11 @@
                 <div id="rightFilePane" data-side="right" class="pane btn-group-vertical col-sm-12" role="group">
                     <button type="button" class="filename-button btn btn-info btn-sm buttons mb-2 mt-2" th:text="${file_right}">-</button>
                     <div  id="rightFileContents" data-side="right" class="pane-text">
+                         <div class="line-group btn-group btn-group-sm col-sm-12" role="group">
+                            <button type="button" class="eol-button btn btn-sm mb-1 bg-secondary" >
+                                <strong th:text="${'Line ending: ' + eol_right}">-</strong>
+                            </button>
+                        </div>
                         <th:block th:if="${first_right_empty}" >
                             <hr class='emptyHr svgConnection'  th:classappend="${T(com.ds.foldercompare.util.DiffLine).getEmptyClassName({diff_types.get(0)})}"/>
                         </th:block>
