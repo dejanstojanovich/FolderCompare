@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+* Copyright (C) 2020 Dejan Stojanovic <dejanstojanovich@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!--This template contains fragment used for system Root listing-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Folder List</title> 
+    </head>
+
+    <body>
+        <th:block th:fragment="paneFragment" >
+            <button data-path="root" type="button" class="root-button btn btn-info btn-sm buttons mb-2 mt-2">Root</button>
+            <th:block  th:each="file : ${file_list}">
+                <div class="btn-group btn-group-sm" role="group">
+                     <button th:id="${file.getAbsolutePath()}" type="button" class="list-button btn btn-primary btn-sm mb-1"
+                          th:attr="data-type=${file.isFile()} ? 'file' : 'folder',data-path=${file.getAbsolutePath()}" th:text="${file.getAbsolutePath()}">Test</button>
+                </div>
+               
+            </th:block>
+        </th:block>
+
+    </body>
+</html>

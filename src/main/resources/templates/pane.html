@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--
+* Copyright (C) 2020 Dejan Stojanovic <dejanstojanovich@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!--This template contains fragment used for directory listing. It handles differently left/right side display-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Folder List</title> 
+    </head>
+
+    <body>
+        <th:block th:fragment="paneFragment" >
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" 
+                        class="root-button btn btn-info btn-sm buttons mb-2 mt-2" 
+                        th:attr="data-path=${folder}"
+                        th:text="${folder}">Folder</button>
+                <button class="up-button btn btn-secondary btn-sm buttons mb-2 mt-2 iconButton">
+                    <i class="fa fa-upload"></i>
+                </button>
+            </div>
+            <th:block  th:each="file : ${file_list}">
+                <div class="btn-group btn-group-sm" role="group">
+                    <th:block th:if="${#strings.equals(side,'left')}" >
+                        <button type="button" 
+                                class="list-button btn btn-secondary btn-sm mb-1" 
+                                th:attr="data-type=${file.isFile()} ? 'file' : 'folder',data-path=${file.getAbsolutePath()},data-file_size=${file.length()}" 
+                                th:text="${file.getName()}">Root</button>
+                        <button class="btn btn-secondary btn-sm buttons mb-1 sizeButton" 
+                                th:text="${file.isFile()} ? ${T(com.ds.foldercompare.util.Constants).readableFileSize(file.length())} : ''"
+                                th:title="${file.length()}"></button>
+                        <button class="btn btn-secondary btn-sm buttons mb-1 dateButton" 
+                                th:text="${T(com.ds.foldercompare.util.Constants).getDate(file.lastModified(),timezone)}"></button>
+                        <button class="btn btn-secondary btn-sm buttons mb-1 iconButton">
+                            <i class='fa' th:classappend="${T(com.ds.foldercompare.util.Constants).getFileType(file)}"></i>
+                        </button>
+                    </th:block>
+                    <th:block th:if="${#strings.equals(side,'right')}" >
+                        <button class="btn btn-secondary btn-sm buttons mb-1 iconButton">
+                            <i class='fa' th:classappend="${T(com.ds.foldercompare.util.Constants).getFileType(file)}"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm buttons mb-1 dateButton" 
+                                th:text="${T(com.ds.foldercompare.util.Constants).getDate(file.lastModified(),timezone)}"></button>
+                        <button class="btn btn-secondary btn-sm buttons mb-1 sizeButton" 
+                                th:text="${file.isFile()} ? ${T(com.ds.foldercompare.util.Constants).readableFileSize(file.length())} : ''"
+                                th:title="${file.length()}"></button>
+                        <button th:id="${file.getName()}" type="button" 
+                                class="list-button btn btn-secondary btn-sm mb-1" 
+                                th:attr="data-type=${file.isFile()} ? 'file' : 'folder',data-path=${file.getAbsolutePath()},data-file_size=${file.length()}" 
+                                th:text="${file.getName()}">Root</button>
+
+                    </th:block>
+
+                </div>
+            </th:block>
+        </th:block>
+
+    </body>
+</html>

@@ -1,0 +1,140 @@
+/*
+* Copyright (C) 2020 Dejan Stojanovic <dejanstojanovich@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* 
+    Created on : Oct 7, 2019, 11:50:05 AM
+    Author     : Dejan Stojanovic
+*/
+body{
+    background-color: black;
+    font-family: Arial, Gadget, sans-serif;
+    font-weight: bold;
+    color: #aaa;
+    width:99%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 12px;
+}
+pre{
+    font-family: Arial, Gadget, sans-serif;
+    font-size: 12px;
+    color: white;
+    margin-bottom: 0;
+    white-space: pre-wrap;
+    word-break:  break-all;
+}
+.line-button{
+    text-align: left;
+}
+.line-group{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nav > li > a{
+    padding: 3px 8px;
+    font-size: 14px;
+}
+
+.top5 { margin-top:5px; }
+/*.top10 { margin-top:10px; }
+.top20 { margin-top:20px; }*/
+
+
+#mainContainer{
+    margin-top: 3px;
+}
+
+
+#navigation, ul, li{
+    z-index: 200;
+}
+
+.dropdown-menu {         
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.rightAlign{
+    text-align: right;
+}
+.red{
+    color:red;
+}
+
+.eol-button {
+    text-align: center;
+    /*color:white;*/
+}
+.lineNumberButton {
+    max-width: 50px !important;
+    min-width: 50px !important;
+}
+.lineNumberButton pre{
+    white-space: nowrap !important;
+    word-break:  keep-all !important;
+}
+.iconButton {
+    max-width: 30px !important;
+}
+.sizeButton {
+    max-width: 90px !important;
+}
+.dateButton {
+    max-width: 120px !important;
+    font-size: 10px !important;
+}
+hr.emptyHr{
+    margin-bottom: 4px;
+    margin-top: 2px;
+    border-top: 1px solid red;
+}
+hr.red{
+    border-top: 1px solid #dc3545;
+}
+hr.green{
+    border-top: 1px solid #218838;
+}
+
+#connectors {
+    position:absolute;
+    top:0; 
+    left:0; 
+    width: 100%;
+    height:100%;
+    z-index: -100;
+
+}
+
+.popupAlert{
+    text-align: center;
+}
+div.alert{
+    position: fixed;
+    top:5px;
+    width:60%;
+    left: 20%;
+    z-index: 1000000;
+}
+#pageUp:hover{
+    cursor: pointer;   
+}
+#pageUp{
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    z-index: 1000000;
+}

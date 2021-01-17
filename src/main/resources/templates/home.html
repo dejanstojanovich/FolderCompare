@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"    
+    xmlns:th="http://www.thymeleaf.org"
+    > 
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Folder compare</title> 
+        <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
+        <script src="./webjars/jquery/3.5.1/jquery.min.js"></script>
+        <!--bootstrap-->
+        <script src="./webjars/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+        <link rel='stylesheet' href='./webjars/bootstrap/4.5.0/css/bootstrap.min.css'/>
+        <!--bootstrap-toggle-->
+
+        <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/css/bootstrap4-toggle.min.css" rel="stylesheet"/>  
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/js/bootstrap4-toggle.min.js"></script>
+        <!--momentjs-->
+        <script src="./webjars/momentjs/min/moment.min.js"></script>
+        <!--font-awesome-->
+        <!--<link rel="stylesheet" href="./webjars/font-awesome/css/fontawesome.min.css"/>-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/css/bootstrap-dialog.min.css" rel="stylesheet"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
+
+        <script th:src="@{js/js.cookie.min.js}"></script>
+        <!--my files-->
+        <link rel="stylesheet"  th:href="@{'css/home_all.css'}"  href="css/home_all.css" />
+
+
+        <script th:src="@{js/home.js}"></script>
+
+    </head>
+    <body> 
+        <div id="mainContainer" class="container-fluid">
+            <ul id="navigation" class="nav nav-tabs"  role="tablist">
+                <li class="nav-item active" role="presentation">
+                    <a class="nav-link" id="listing-tab" data-toggle="tab" href="#listing" role="tab" aria-controls="listing" aria-selected="true">Folder listing</a>
+                </li> 
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">File listing</a>
+                </li>
+
+            </ul>
+            <div class="tab-content">
+                <div id="listing"  class="tab-pane fade show active">
+                    <div class="row">
+                        <div class="col-sm-2  top5 text-center">
+                            <button id="dirCompare" type="button" class="root-button btn btn-info btn-sm buttons mb-2 mt-2">Compare Dir</button>
+                        </div>
+                        <div class="col-sm-8  top5 text-center">
+                            <input id="synchronized" type="checkbox" checked="checked"  data-toggle="toggle" data-on="Synchronized Browsing" data-off="Individual Browsing" 
+                                   data-onstyle="success"  data-offstyle="danger" data-size='sm' data-height="35" data-width="300"/>
+                        </div>
+                    </div>
+                    <div>
+                        <div  id = "listing-data" class="row">
+                            <div data-side="left" class="col-sm-6" style="padding-right: 0;margin-right: -10px">
+                                <div id="leftPane" data-side="left" class="pane btn-group-vertical  col-sm-12" role="group">
+                                    <div th:replace="viewRootPane :: paneFragment"></div>
+                                </div>
+                            </div>
+                            <div data-side="right" class="col-sm-6" style="padding-left: 0;margin-left: -10px">
+                                <div id="rightPane" data-side="right" class="pane btn-group-vertical col-sm-12" role="group">
+                                    <div th:replace="viewRootPane :: paneFragment"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                    </div>
+
+
+                </div>
+                <div id="files"  class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-sm-5 top5 text-center">
+                            <button type="button" class="showFile btn btn-info btn-sm buttons mb-2 mt-2" data-side="left">Show content</button>
+                            <button id="leftEncodingSelectButton" type="button" class="btn btn-info btn-sm dropdown-toggle mb-2 mt-2"  
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span id="leftEncodingSelectButtonText">UTF-8</span>
+                                <span class="caret"></span>
+                            </button>
+                            <div id="leftEncodingSelection" class="dropdown-menu" aria-labelledby="leftEncodingSelectButton">
+                                <th:block th:each="encoding : ${encodings}" >
+                                    <a class="dropdown-item" href="#" th:text="${encoding}">UTF-8</a>
+                                </th:block>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 top5 text-center">
+                            <button id="fileCompare" type="button" class="btn btn-info btn-sm buttons mb-2 mt-2">
+                                Compare Files</button>
+                        </div>
+                        <div class="col-sm-5 top5 text-center">
+                            <button type="button" class="showFile btn btn-info btn-sm buttons mb-2 mt-2" data-side="right">Show content</button>
+                            <button id="rightEncodingSelectButton" type="button" class="btn btn-info btn-sm dropdown-toggle mb-2 mt-2"  
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span id="rightEncodingSelectButtonText">UTF-8</span>
+                                <span class="caret"></span>
+                            </button>
+                            <div id="rightEncodingSelection" class="dropdown-menu" aria-labelledby="rightEncodingSelectButton">
+                                <th:block th:each="encoding : ${encodings}" >
+                                    <a class="dropdown-item" href="#" th:text="${encoding}">UTF-8</a>
+                                </th:block>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div >
+                        <div  id = "filePane" class="row">
+                            <div data-side="left" class="col-sm-6">
+                                <div id="leftFilePane" data-side="left" class="pane btn-group-vertical col-sm-12" role="group">
+                                    <button type="button" class="filename-button btn btn-info btn-sm buttons mb-2 mt-2" 
+                                            >-</button>
+                                    <div  id="leftFileContents" data-side="left" class="pane-text">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-side="right" class="col-sm-6">
+                                <div id="rightFilePane" data-side="right" class="pane btn-group-vertical col-sm-12" role="group">
+                                    <button type="button" class="filename-button btn btn-info btn-sm buttons mb-2 mt-2" 
+                                            >-</button>
+                                    <div  id="rightFileContents" data-side="right" class="pane-text">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <svg id='connectors'/>
+        <div id="pageUp">
+            <i class="fa fa-arrow-circle-o-up fa-3x" aria-hidden="true"></i>
+        </div>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var extensions = /*[[${extensions}]]*/ 0;
+            var sizeLimit = /*[[${size_limit}]]*/ -1;
+            var sizeLimitString = /*[[${size_limit_string}]]*/ -1;
+            /*]]>*/
+        </script>
+    </body>
+
+</html>
